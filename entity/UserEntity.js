@@ -22,3 +22,5 @@ UserEntity.fromDatabae = function(user){
     this.mBirth = user.birth;
     this.mImageUrl = user.image_url;
 }
+
+module.exports = UserEntity

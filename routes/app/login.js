@@ -4,7 +4,6 @@
 
 var express = require('express');
 var router = express.Router();
-var RegisterMsg = require("../../message/RgisterMsg");
 router.post('/', function(req, res, next) {
     var params = req.body;
     userService.login(params.email, params.password).then(checkResult).error(checkErr);
@@ -14,10 +13,8 @@ router.post('/', function(req, res, next) {
         var msg = new RegisterMsg();
         if (valid){
             msg.state = true;
-
         }else{
             msg.state = false;
-
         }
 
         res.json();

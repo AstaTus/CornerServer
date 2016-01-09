@@ -6,5 +6,5 @@
 exports.host = 'localhost';
 exports.user = 'root';
 exports.password = 'root';
-exports.database = 'life_blog';
+exports.database = 'corner';
 exports.port = 3306;
