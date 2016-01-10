@@ -4,7 +4,7 @@
 
 sqlManager = require('../database/SqlManager')
 log = require('../util/Log')
-UserEntity = require("../entity/UserEntity")
+var UserEntity = require("../entity/UserEntity")
 var promise = require('bluebird')
 var UserModel = function(){}
 
@@ -40,7 +40,7 @@ UserModel.queryUserByEmail = function(email){
             return null;
         }else{
             var user = new UserEntity();
-            user.fromDatabase(rows[0]);
+            user.fromDatabase(records[0]);
 
             return user;
         }

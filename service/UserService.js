@@ -5,7 +5,7 @@
 var userModel = require('../model/UserModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
-var codeConfig = require("../config/CodeConfig")
+var CodeConfig = require("../config/CodeConfig")
 UserService = function(){
 }
 
@@ -15,7 +15,7 @@ UserService.register = function(email, password, nickname, birth, sex){
     var reg = /^[\w.]{6,20}$/;
     var r = reg.test(password);
     if(r == false){
-        return promise.reject(codeConfig.REGISTER_PASSWORD_ERROR);
+        return promise.reject(CodeConfig.REGISTER_PASSWORD_ERROR);
     }
 
     //检测邮箱重复
@@ -35,7 +35,7 @@ UserService.register = function(email, password, nickname, birth, sex){
         if(user == null)
             return promise.resolve(nickname);
         else
-            return promise.reject(codeConfig.REGISTER_EMAIL_REPEAT);
+            return promise.reject(new Error(CodeConfig.REGISTER_EMAIL_REPEAT));
     }
 
     function getUserByNickname(nickname){
@@ -46,7 +46,7 @@ UserService.register = function(email, password, nickname, birth, sex){
         if(user == null)
             return promise.resolve();
         else
-            return promise.reject(codeConfig.REGISTER_NICKNAME_REPEAT);
+            return promise.reject(CodeConfig.REGISTER_NICKNAME_REPEAT);
     }
 
     function processRegister(){
@@ -74,24 +74,19 @@ UserService.register = function(email, password, nickname, birth, sex){
 
 UserService.login = function(email, password){
 
-    return promise.all([getUser(email), getPassword(password)]).spread(checkUser);
+    return promise.resolve(email).then(getUser).then(checkUser);
 
     function getUser(email){
-        return userModel.queryUser(email);
+        return userModel.queryUserByEmail(email);
     }
 
-    function getPassword(password){
-        return promise.resolve(password);
-    }
-
-    function checkUser(user, password){
-        if(user == null){
-            return false;
-        }
+    function checkUser(user){
+        if(user == null)
+            return CodeConfig.LOGIN_EMAIL_NOT_EXIST;
         else if (user.password === password)
-            return true;
+            return CodeConfig.LOGIN_SUCCESS;
         else
-            return false;
+            return CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR;
     }
 }
 

@@ -13,7 +13,7 @@ function UserEntity(){
 
 }
 
-UserEntity.fromDatabae = function(user){
+UserEntity.prototype.fromDatabase = function(user){
     this.mGuid = user.guid;
     this.mEmail = user.email;
     this.mPassword = user.password;
