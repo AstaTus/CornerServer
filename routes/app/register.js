@@ -5,32 +5,37 @@
 var express = require('express');
 var router = express.Router();
 var RegisterMsg = require("../../message/RegisterMsg");
-var BaseMsg = require("../../message/BaseMsg");
+var MessagePacket = require("../../message/MessagePacket");
 var userService = require("../../service/UserService")
 var CodeConfig = require("../../config/CodeConfig")
+var Log = require('../../util/Log')
 router.post('/', function(req, res, next) {
     var params = req.body;
-
+    var session = req.session;
     userService.register(params.email, params.password, params.nickname, params.birthday, params.sex)
         .then(checkResult)
         .error(checkErr)
         .catch(checkErr);
 
-    function checkResult(valid){
-        var msg = new RegisterMsg();
-        if (valid){
-            msg.state = RegisterMsg.SUCESS;
+    function checkResult(insertGuid){
+        var packet = new MessagePacket();
+        packet.msg = new RegisterMsg();
+        packet.result = MessagePacket.RESULT_SUCESS;
+        if (insertGuid == 0){
+
+            //log
         }else{
-            msg.state = 10;
+            packet.msg.code = RegisterMsg.SUCCESS;
+            session.userGuid = insertGuid;
         }
 
-        res.json(msg);
+        res.json(packet);
     }
 
     function checkErr(e){
-        var msg = new RegisterMsg();
-        msg.result = BaseMsg.SUCESS;
-        msg.code = RegisterMsg.SUCESS;
+        var packet = new MessagePacket();
+        packet.msg = new RegisterMsg();
+        packet.result = MessagePacket.RESULT_SUCESS;
         if(e.message == CodeConfig.REGISTER_EMAIL_REPEAT){
             msg.code = RegisterMsg.EMAIL_REAPT;
         }
@@ -41,10 +46,12 @@ router.post('/', function(req, res, next) {
             msg.code = RegisterMsg.PASSWORD_ERROR;
         }
         else{
-            msg.result = BaseMsg.FAILED;
+            packet.result = MessagePacket.RESULT_FAILED;
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+            //log error
         }
 
-        res.json(msg);
+        res.json(packet);
     }
 });
 

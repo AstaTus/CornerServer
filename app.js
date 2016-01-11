@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session')
 
-
+var BaseMsg = require('./message/MessagePacket')
 var sqlMgr = require("./database/SqlManager")
 
 var routes = require('./routes/index');
@@ -30,8 +30,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { maxAge: 60 * 1000 * 60 * 24 * 30 }//一个月
 }))
+
+//除了login 和 register 不需要session 验证 其他需要
+/*app.use(/^\/login|\/register/, function(req, res, next) {
+  var session = req.session;
+  if(session != null){
+    var msg = new BaseMsg();
+    msg.result = BaseMsg.RESULT_FAILED;
+    msg.resultCode = BaseMsg.RESULT_CODE_SERVER_SESSION_ERROR;
+    res.json(msg);
+  }else if (session.userGuid == null){
+    var msg = new BaseMsg();
+    msg.result = BaseMsg.RESULT_FAILED;
+    msg.resultCode = BaseMsg.RESULT_CODE_USER_NOT_VERIFY;
+    res.json(msg);
+  }else{
+    next();
+  }
+})*/
 
 app.use('/', routes);
 app.use('/users', users);

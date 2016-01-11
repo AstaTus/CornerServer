@@ -12,9 +12,9 @@ UserModel.insertUser = function(email, password, nickname, birth, sex){
     var sql = 'INSERT INTO User (email, password, nickname, birthday, sex) VALUES (?, ?, ?, ?, ?);';
     var options = [email, password, nickname, birth, sex];
 
-    return sqlManager.excuteSqlAsync(sql, options).then(testReslove);
+    return sqlManager.excuteSqlAsync(sql, options).then(checkResult);
 
-    function testReslove(result){
+    function checkResult(result){
         if (result){
             return result.insertId;
         }

@@ -6,33 +6,34 @@ var express = require('express');
 var router = express.Router();
 var userService = require("../../service/UserService")
 var LoginMsg = require("../../message/LoginMsg");
-var BaseMsg = require("../../message/BaseMsg");
+var MessagePacket = require("../../message/MessagePacket");
 var CodeConfig = require("../../config/CodeConfig")
 
 router.post('/', function(req, res, next) {
     var params = req.body;
-    userService.login(params.email, params.password).then(checkResult).error(checkErr);
+    var session = req.session;
+    userService.login(params.email, params.password).spread(checkResult).error(checkErr);
 
-    function checkResult(code){
-        var msg = new LoginMsg();
-        msg.result = BaseMsg.SUCESS;
+    function checkResult(code, userGuid){
+        var packet = new MessagePacket();
+        packet.msg = new LoginMsg();
+        packet.result = MessagePacket.RESULT_SUCESS;
         if (code == CodeConfig.LOGIN_EMAIL_NOT_EXIST){
-            msg.state = LoginMsg.INFO_ERROR;
-
+            packet.msg.state = LoginMsg.ERROR;
         }else if(code == CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR){
-            msg.state = LoginMsg.INFO_ERROR;
+            packet.msg.state = LoginMsg.ERROR;
         }else if (code == CodeConfig.LOGIN_SUCCESS){
-            msg.state = LoginMsg.LOGIN_SUCCESS;
+            session.userGuid = userGuid;
+            packet.msg.state = LoginMsg.SUCCESS;
         }
-
-        res.json(msg);
+        res.json(packet);
     }
 
     function checkErr(e){
-        var msg = new LoginMsg();
-        msg.result = BaseMsg.FAILED;
-
-        res.json(msg);
+        var packet = new MessagePacket();
+        packet.result = MessagePacket.RESULT_FAILED;
+        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        res.json(packet);
     }
 });
 

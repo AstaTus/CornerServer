@@ -24,8 +24,7 @@ UserService.register = function(email, password, nickname, birth, sex){
         .then(checkEmailRepeat)
         .then(getUserByNickname)
         .then(checkNickNameRepeat)
-        .then(processRegister)
-        .then();
+        .then(processRegister);
 
     function getUserByEmail(email){
         return userModel.queryUserByEmail(email);
@@ -82,11 +81,11 @@ UserService.login = function(email, password){
 
     function checkUser(user){
         if(user == null)
-            return CodeConfig.LOGIN_EMAIL_NOT_EXIST;
-        else if (user.password === password)
-            return CodeConfig.LOGIN_SUCCESS;
+            return [CodeConfig.LOGIN_EMAIL_NOT_EXIST, 0];
+        else if (user.mPassword == password)
+            return [CodeConfig.LOGIN_SUCCESS, user.mGuid];
         else
-            return CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR;
+            return [CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR, 0];
     }
 }
 
