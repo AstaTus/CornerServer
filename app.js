@@ -1,19 +1,23 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session')
-
-var BaseMsg = require('./message/MessagePacket')
-var sqlMgr = require("./database/SqlManager")
+var promise = require('bluebird');
+var session = require('express-session');
+promise.promisifyAll(session);
+var BaseMsg = require('./message/MessagePacket');
+var sqlMgr = require("./database/SqlManager");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var register = require('./routes/app/register')
-var login = require('./routes/app/login')
-
+var register = require('./routes/app/register');
+var login = require('./routes/app/login');
+var logout = require('./routes/app/logout');
+var send = require('./routes/app/send');
+var index = require('./routes/index')
 var app = express();
 
 // view engine setup
@@ -30,14 +34,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: { maxAge: 60 * 1000 * 60 * 24 * 30 }//一个月
 }))
 
 //除了login 和 register 不需要session 验证 其他需要
-/*app.use(/^\/login|\/register/, function(req, res, next) {
+app.use(/^(?!(?:\/app\/login|\/app\/register|\/app\/send)$)/, function(req, res, next) {
   var session = req.session;
-  if(session != null){
+  if(session == null){
     var msg = new BaseMsg();
     msg.result = BaseMsg.RESULT_FAILED;
     msg.resultCode = BaseMsg.RESULT_CODE_SERVER_SESSION_ERROR;
@@ -50,13 +54,16 @@ app.use(session({
   }else{
     next();
   }
-})*/
+})
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/app/register', register)
 app.use('/app/login', login)
+app.use('/app/logout', logout)
+app.use('/app/send', send)
 
+app.use('/index', index)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

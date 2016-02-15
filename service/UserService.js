@@ -89,6 +89,16 @@ UserService.login = function(email, password){
     }
 }
 
+UserService.logout = function(session){
+    session.destroyAsync(destroyCallback);
+    function destroyCallback(err){
+        if (err == null)
+            return true;
+        else
+            return false;
+    }
+}
+
 /*UserService.forgetAccount(){
 
 }*/

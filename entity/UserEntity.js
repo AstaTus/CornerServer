@@ -10,7 +10,6 @@ function UserEntity(){
     this.mNickname = "";
     this.mBirth = "";
     this.mImageUrl = "";
-
 }
 
 UserEntity.prototype.fromDatabase = function(user){
