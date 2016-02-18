@@ -17,7 +17,8 @@ var register = require('./routes/app/register');
 var login = require('./routes/app/login');
 var logout = require('./routes/app/logout');
 var send = require('./routes/app/send');
-var index = require('./routes/index')
+var bsend = require('./routes/send');
+var index = require('./routes/index');
 var app = express();
 
 // view engine setup
@@ -39,7 +40,7 @@ app.use(session({
 }))
 
 //除了login 和 register 不需要session 验证 其他需要
-app.use(/^(?!(?:\/app\/login|\/app\/register|\/app\/send)$)/, function(req, res, next) {
+app.use(/^(?!(?:\/app\/login|\/app\/register|\/app\/send|\/send)$)/, function(req, res, next) {
   var session = req.session;
   if(session == null){
     var msg = new BaseMsg();
@@ -62,6 +63,7 @@ app.use('/app/register', register)
 app.use('/app/login', login)
 app.use('/app/logout', logout)
 app.use('/app/send', send)
+app.use('/send', bsend)
 
 app.use('/index', index)
 // catch 404 and forward to error handler
