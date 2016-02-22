@@ -16,5 +16,6 @@ MessagePacket.RESULT_CODE_UNDEFINED = 0;
 MessagePacket.RESULT_CODE_USER_NOT_VERIFY = 1;
 MessagePacket.RESULT_CODE_SERVER_SESSION_ERROR = 2;
 MessagePacket.RESULT_CODE_SERVER_INTER_ERROR = 3;
+MessagePacket.RESULT_CODE_PARAM_ERROR = 4;
 module.exports = MessagePacket
 

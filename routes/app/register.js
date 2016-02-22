@@ -23,6 +23,7 @@ router.post('/', function(req, res, next) {
         packet.result = MessagePacket.RESULT_SUCESS;
         if (insertGuid == 0){
 
+            packet.result = MessagePacket.RESULT_FAILED;
             //log
         }else{
             packet.msg.code = RegisterMsg.SUCCESS;

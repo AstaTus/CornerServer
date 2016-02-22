@@ -8,7 +8,6 @@ var promise = require('bluebird')
 var log = require('../util/Log')
 var CodeConfig = require("../config/CodeConfig")
 PostService = function(){
-
 }
 
 PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
@@ -20,11 +19,11 @@ PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
         .then(processSend);
 
     function getCorner(cornerGuid){
-        return cornerModel.queryUserByEmail(email);
+        return cornerModel.queryCornerByGuid(cornerGuid);
     }
 
     function checkCornerValid(corner){
-        if (corner == null) {
+        if (corner != null) {
             return promise.resolve();
         }
         else{
@@ -33,6 +32,9 @@ PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
     }
 
     function processSend(){
+        var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
         return postModel.insertPost(userGuid, cornerGuid, date, imageUrl, text);
     }
 }
+
+module.exports = PostService;

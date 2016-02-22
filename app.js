@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var promise = require('bluebird');
 var session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 promise.promisifyAll(session);
 var BaseMsg = require('./message/MessagePacket');
 var sqlMgr = require("./database/SqlManager");
@@ -34,13 +35,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'keyboard cat',
+  store: new MongoStore({
+    url: 'mongodb://localhost:27017',
+  }),
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 60 * 1000 * 60 * 24 * 30 }//一个月
 }))
 
 //除了login 和 register 不需要session 验证 其他需要
-app.use(/^(?!(?:\/app\/login|\/app\/register|\/app\/send|\/send)$)/, function(req, res, next) {
+app.use(/^(?!(?:\/app\/login|\/app\/register|\/send)$)/, function(req, res, next) {
   var session = req.session;
   if(session == null){
     var msg = new BaseMsg();

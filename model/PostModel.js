@@ -22,8 +22,8 @@ PostModel.insertPost = function(userGuid, cornerGuid, date, imageUrl, text){
     }
 }
 
+/*
 PostModel.queryPostByUser = function(guid, date, type){
-    paginate
     var sql;
     var options;
     //大于date时间的数据 --往上拉 更新
@@ -35,6 +35,7 @@ PostModel.queryPostByUser = function(guid, date, type){
         sql = 'SELECT * FROM Post WHERE user_guid = ? AND date < ? ORDER BY date DESC LIMIT ?';
         options = [guid, paginate.items[paginate.items.length - 1].mDate, paginate.perPage];
     }
-
-
 }
+*/
+
+module.exports =  PostModel;
