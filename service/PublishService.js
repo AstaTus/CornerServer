@@ -1,16 +1,15 @@
 /**
- * Created by AstaTus on 2016/2/14.
+ * Created by AstaTus on 2016/2/26.
  */
-
-var postModel = require('../model/PostModel')
+var articleModel = require('../model/ArticleModel')
 var cornerModel = require('../model/CornerModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
 var CodeConfig = require("../config/CodeConfig")
-PostService = function(){
+PublishService = function(){
 }
 
-PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
+PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
 
     //检测cornerGuid 是否存在
     return promise.resolve(cornerGuid)
@@ -27,7 +26,7 @@ PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
             return promise.resolve();
         }
         else{
-           return promise.reject(new Error(CodeConfig.REGISTER_EMAIL_REPEAT));
+            return promise.reject(new Error(CodeConfig.REGISTER_EMAIL_REPEAT));
         }
     }
 
@@ -37,4 +36,4 @@ PostService.sendPost = function(userGuid, cornerGuid, imageUrl, text){
     }
 }
 
-module.exports = PostService;
+module.exports = PublishService;

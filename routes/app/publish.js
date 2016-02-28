@@ -4,9 +4,9 @@
 var express = require('express');
 var router = express.Router();
 var MessagePacket = require("../../message/MessagePacket");
-var SendMsg = require("../../message/SendMsg");
+var PublishMsg = require("../../message/PublishMsg");
 var formidable = require('formidable');
-var postService = require("../../service/PostService");
+var publishService = require("../../service/PublishService");
 var Promise = require('bluebird');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) {
         }else{
             var fileName = uuid.v1();
             fs.renameSync(files.image.path, form.uploadDir + '/' + fileName);
-            postService.sendPost(session.userGuid, 1, session.userGuid + '/' + fileName, fields.text)
+            publishService.publishArticle(session.userGuid, 1, session.userGuid + '/' + fileName, fields.text)
                 .then(checkResult)
                 .error(checkErr);
         }
@@ -52,13 +52,13 @@ router.post('/', function(req, res, next) {
 
     function checkResult(insertGuid){
         var packet = new MessagePacket();
-        packet.msg = new SendMsg();
+        packet.msg = new PublishMsg();
         packet.result = MessagePacket.RESULT_SUCESS;
         if (insertGuid == 0){
             packet.result = MessagePacket.RESULT_FAILED;
             //log
         }else{
-            packet.msg.code = SendMsg.SUCCESS;
+            packet.msg.code = PublishMsg.SUCCESS;
         }
 
         res.json(packet);

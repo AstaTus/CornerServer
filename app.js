@@ -17,7 +17,8 @@ var users = require('./routes/users');
 var register = require('./routes/app/register');
 var login = require('./routes/app/login');
 var logout = require('./routes/app/logout');
-var send = require('./routes/app/send');
+var publish = require('./routes/app/publish');
+var article = require('./routes/app/article');
 var bsend = require('./routes/send');
 var index = require('./routes/index');
 var app = express();
@@ -44,7 +45,7 @@ app.use(session({
 }))
 
 //除了login 和 register 不需要session 验证 其他需要
-app.use(/^(?!(?:\/app\/login|\/app\/register|\/send)$)/, function(req, res, next) {
+app.use(/^(?!(?:\/app\/login|\/app\/register)$)/, function(req, res, next) {
   var session = req.session;
   if(session == null){
     var msg = new BaseMsg();
@@ -66,7 +67,8 @@ app.use('/users', users);
 app.use('/app/register', register)
 app.use('/app/login', login)
 app.use('/app/logout', logout)
-app.use('/app/send', send)
+app.use('/app/publish', publish)
+app.use('/app/article', article)
 app.use('/send', bsend)
 
 app.use('/index', index)
