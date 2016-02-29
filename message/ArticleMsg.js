@@ -1,13 +1,17 @@
-/**
- * Created by AstaTus on 2016/2/19.
- */
-
 function ArticleMsg(){
-    //是否需要重置客户端的数据
-    this.isTimeOut = false;
-    //数据列表
-    this.articlesList;
+    this.isTimeOut;
+    this.articleList;
+    this.mIsTimeOut;
+    this.mGuids;
+    this.mNames;
+    this.mHeadUrls;
+    this.mTimes;
+    this.mImageUrls;
+    this.mFeelTexts;
+    this.mUpCount;
+    this.mReadCount;
+    this.mComments;
+    this.mLocationGuid;
+    this.mLocationName;
+    this.mIsUps;
 }
-
-
-module.exports = ArticleMsg

@@ -28,13 +28,17 @@ ArticleModel.LESS_TIME_CONDITION = 2;
 ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
     var sql;
     var options;
-    //大于date时间的数据, 单服情况下不会有date重复的问题,date精度到毫秒
-    if (condition == ArticleModel.MORE_TIME_CONDITION){
-        sql = 'SELECT * FROM atitcle WHERE user_guid = ? AND date > ? ORDER BY date ASC LIMIT ?';
+    //time 为空的情况
+    if(time == null || time == ''){
+        sql = 'SELECT * FROM article WHERE user_guid = ? ORDER BY date DESC LIMIT ?';
+        options = [guid, maxCount];
+    }//大于date时间的数据, 单服情况下不会有date重复的问题,date精度到毫秒
+    else if (condition == ArticleModel.MORE_TIME_CONDITION){
+        sql = 'SELECT * FROM article WHERE user_guid = ? AND date > STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
         options = [guid, time, maxCount];
     }//小于date时间的数据
     else{
-        sql = 'SELECT * FROM atitcle WHERE user_guid = ? AND date < ? ORDER BY date ASC LIMIT ?';
+        sql = 'SELECT * FROM article WHERE user_guid = ? AND date < STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
         options = [guid, time, maxCount];
     }
 
@@ -44,14 +48,14 @@ ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
         console.log('rows', records);
 
         var array = new Array();
-        for(i = 0; i < records.size(); ++i){
+        for(i = 0; i < records.length; ++i){
             var article = new ArticleEntity();
             article.fromDatabase(records[i]);
             array.push(article);
         }
 
         var isFull = false;
-        if (maxCount == array.length()){
+        if (maxCount == array.length){
             isFull = true;
         }
         return [array, isFull];

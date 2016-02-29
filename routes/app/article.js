@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
         var packet = new MessagePacket();
         packet.msg = new ArticleMsg();
         packet.result = MessagePacket.RESULT_SUCESS;
-        packet.msg.articlesList = list;
+        packet.msg.articleList = list;
         packet.msg.isTimeOut = isFull;
         res.json(packet);
     }
