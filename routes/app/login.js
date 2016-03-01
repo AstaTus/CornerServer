@@ -17,21 +17,22 @@ router.post('/', function(req, res, next) {
     function checkResult(code, userGuid){
         var packet = new MessagePacket();
         packet.msg = new LoginMsg();
-        packet.result = MessagePacket.RESULT_SUCESS;
+        packet.result = true;
+        packet.msg.mResult = false;
         if (code == CodeConfig.LOGIN_EMAIL_NOT_EXIST){
-            packet.msg.state = LoginMsg.ERROR;
+            packet.msg.mCode = LoginMsg.CODE_ACCOUNT_NOT_EXIST;
         }else if(code == CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR){
-            packet.msg.state = LoginMsg.ERROR;
+            packet.msg.mCode = LoginMsg.CODE_ACCOUNT_OR_PASSWORD_ERROR;
         }else if (code == CodeConfig.LOGIN_SUCCESS){
             session.userGuid = userGuid;
-            packet.msg.state = LoginMsg.SUCCESS;
+            packet.msg.mResult = true;
         }
         res.json(packet);
     }
 
     function checkErr(e){
         var packet = new MessagePacket();
-        packet.result = MessagePacket.RESULT_FAILED;
+        packet.result = false;
         packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
         res.json(packet);
     }

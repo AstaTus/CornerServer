@@ -42,9 +42,9 @@ ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
         options = [guid, time, maxCount];
     }
 
-    return sqlManager.excuteSqlAsync(sql, options).then(reslove);
+    return sqlManager.excuteSqlAsync(sql, options);
 
-    function reslove(records) {
+    /*function reslove(records) {
         console.log('rows', records);
 
         var array = new Array();
@@ -55,11 +55,11 @@ ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
         }
 
         var isFull = false;
-        if (maxCount == array.length){
+        if (maxCount == records.length){
             isFull = true;
         }
-        return [array, isFull];
-    }
+        return [records, isFull];
+    }*/
 }
 
 module.exports =  ArticleModel;

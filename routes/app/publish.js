@@ -53,12 +53,13 @@ router.post('/', function(req, res, next) {
     function checkResult(insertGuid){
         var packet = new MessagePacket();
         packet.msg = new PublishMsg();
-        packet.result = MessagePacket.RESULT_SUCESS;
+        packet.result = true;
         if (insertGuid == 0){
-            packet.result = MessagePacket.RESULT_FAILED;
+            packet.result = false;
+            packet.resultCode = MessagePacket.RESULT_CODE_DATABASE_ERROR;
             //log
         }else{
-            packet.msg.code = PublishMsg.SUCCESS;
+            packet.msg.mResult = true;
         }
 
         res.json(packet);
@@ -66,7 +67,7 @@ router.post('/', function(req, res, next) {
 
     function checkErr(e){
         var packet = new MessagePacket();
-        packet.result = MessagePacket.RESULT_FAILED;
+        packet.result = false;
         packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
         res.json(packet);
     }

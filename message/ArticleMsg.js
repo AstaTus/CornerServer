@@ -1,9 +1,10 @@
 function ArticleMsg(){
-    this.isTimeOut;
-    this.articleList;
+    //是否需要重置客户端的数据
     this.mIsTimeOut;
+    //数据列表
     this.mGuids;
-    this.mNames;
+    this.mUserGuids;
+    this.mUserNames;
     this.mHeadUrls;
     this.mTimes;
     this.mImageUrls;
@@ -15,3 +16,5 @@ function ArticleMsg(){
     this.mLocationName;
     this.mIsUps;
 }
+
+module.exports = ArticleMsg

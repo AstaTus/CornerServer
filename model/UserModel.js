@@ -47,6 +47,30 @@ UserModel.queryUserByEmail = function(email){
     }
 }
 
+UserModel.queryUserByGuid = function(guid){
+    var sql = 'SELECT * FROM User WHERE guid = ?';
+    var options = [guid];
+
+    return sqlManager.excuteSqlAsync(sql, options).then(reslove);
+
+    function reslove(records){
+        console.log('rows', records);
+
+        if(records.length == 0){
+            return null;
+        }else if (records.length > 1){
+            //记录日志
+            log.getCurrent().fatal("UserModel.queryUserByGuid: user record is rpeat");
+            return promise;
+        }else{
+            var user = new UserEntity();
+            user.fromDatabase(rows[0]);
+
+            return user;
+        }
+    }
+}
+
 UserModel.queryUserByNickname = function(nickname){
     var sql = 'SELECT * FROM User WHERE nickname = ?';
     var options = [nickname];

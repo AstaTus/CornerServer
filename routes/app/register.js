@@ -20,13 +20,13 @@ router.post('/', function(req, res, next) {
     function checkResult(insertGuid){
         var packet = new MessagePacket();
         packet.msg = new RegisterMsg();
-        packet.result = MessagePacket.RESULT_SUCESS;
+        packet.result = true;
         if (insertGuid == 0){
-
-            packet.result = MessagePacket.RESULT_FAILED;
+            packet.result = false;
+            packet.resultCode = MessagePacket.RESULT_CODE_DATABASE_ERROR;
             //log
         }else{
-            packet.msg.code = RegisterMsg.SUCCESS;
+            packet.msg.mResult = true;
             session.userGuid = insertGuid;
         }
 
@@ -36,18 +36,18 @@ router.post('/', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.msg = new RegisterMsg();
-        packet.result = MessagePacket.RESULT_SUCESS;
+        packet.result = true;
         if(e.message == CodeConfig.REGISTER_EMAIL_REPEAT){
-            msg.code = RegisterMsg.EMAIL_REAPT;
+            msg.code = RegisterMsg.CODE_EMAIL_REAPT;
         }
         else if(e.message == CodeConfig.REGISTER_NICKNAME_REPEAT){
-            msg.code = RegisterMsg.NICKNAME_REPEAT;
+            msg.code = RegisterMsg.CODE_NICKNAME_REPEAT;
         }
         else if(e.message == CodeConfig.REGISTER_PASSWORD_ERROR){
-            msg.code = RegisterMsg.PASSWORD_ERROR;
+            msg.code = RegisterMsg.PASSWORD_FORMAT_ERROR;
         }
         else{
-            packet.result = MessagePacket.RESULT_FAILED;
+            packet.result = false;
             packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
             //log error
         }
