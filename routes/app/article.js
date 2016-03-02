@@ -7,7 +7,7 @@ var MessagePacket = require("../../message/MessagePacket");
 var ArticleMsg = require("../../message/ArticleMsg");
 var CommentMsg = require("../../message/ArticleMsg");
 var articleService = require("../../service/ArticleService");
-
+var moment = require('moment');
 router.get('/', function(req, res, next) {
     var params = req.query;
     var session = req.session;
@@ -35,11 +35,12 @@ router.get('/', function(req, res, next) {
             msg.mUserGuids.push(article.user_guid);
             msg.mUserNames.push(article.nickname);
             msg.mHeadUrls.push(article.head_url);
-            msg.mTimes.push(article.date);
+            var time = moment(article.date);
+            msg.mTimes.push(time.format('YYYY-MM-DD hh:mm:ss'));
             msg.mImageUrls.push(article.image_url);
             msg.mFeelTexts.push(article.text);
-            msg.mUpCounts.push(article.text);
-            msg.mReadCounts.push(uperCount);
+            msg.mUpCounts.push(uperCount);
+            msg.mReadCounts.push(article.read_count);
             msg.mLocationGuids.push(corner.guid);
             msg.mLocationNames.push(corner.name);
             msg.mIsUps.push(isUp);

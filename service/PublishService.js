@@ -6,6 +6,7 @@ var cornerModel = require('../model/CornerModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
 var CodeConfig = require("../config/CodeConfig")
+var moment = require('moment');
 PublishService = function(){
 }
 
@@ -31,8 +32,8 @@ PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
     }
 
     function processSend(){
-        var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-        return postModel.insertPost(userGuid, cornerGuid, date, imageUrl, text);
+        var now = moment();
+        return articleModel.insertArticle(userGuid, cornerGuid, now, imageUrl, text);
     }
 }
 
