@@ -30,15 +30,49 @@ ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
     var options;
     //time 为空的情况
     if(time == null || time == ''){
-        sql = 'SELECT * FROM article WHERE user_guid = ? ORDER BY date DESC LIMIT ?';
+        sql = 'SELECT ' +
+                  'article.*, user.nickname, user.head_url ' +
+              'FROM ' +
+                  'article INNER JOIN user ' +
+              'WHERE ' +
+                  'article.user_guid = ? AND ' +
+                  'article.user_guid = user.guid ' +
+              'ORDER BY ' +
+                  'date DESC ' +
+              'LIMIT ' +
+                 '?;';
         options = [guid, maxCount];
     }//大于date时间的数据, 单服情况下不会有date重复的问题,date精度到毫秒
     else if (condition == ArticleModel.MORE_TIME_CONDITION){
-        sql = 'SELECT * FROM article WHERE user_guid = ? AND date > STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
+        sql = 'SELECT ' +
+                'article.*, user.nickname, user.head_url ' +
+            'FROM ' +
+                'article INNER JOIN user ' +
+            'WHERE ' +
+                'article.user_guid = ? AND ' +
+                'article.date > ? AND ' +
+                'article.user_guid = user.guid ' +
+            'ORDER BY ' +
+                'date DESC ' +
+            'LIMIT ' +
+                '?;';
+        //sql = 'SELECT * FROM article WHERE user_guid = ? AND date > STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
         options = [guid, time, maxCount];
     }//小于date时间的数据
     else{
-        sql = 'SELECT * FROM article WHERE user_guid = ? AND date < STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
+        sql = 'SELECT ' +
+                'article.*, user.nickname, user.head_url ' +
+            'FROM ' +
+                'article INNER JOIN user ' +
+            'WHERE ' +
+                'article.user_guid = ? AND ' +
+                'article.date < ? AND ' +
+                'article.user_guid = user.guid ' +
+            'ORDER BY ' +
+                'date DESC ' +
+            'LIMIT ' +
+                '?;';
+        //sql = 'SELECT * FROM article WHERE user_guid = ? AND date < STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
         options = [guid, time, maxCount];
     }
 

@@ -5,33 +5,63 @@ var express = require('express');
 var router = express.Router();
 var MessagePacket = require("../../message/MessagePacket");
 var ArticleMsg = require("../../message/ArticleMsg");
+var CommentMsg = require("../../message/ArticleMsg");
 var articleService = require("../../service/ArticleService");
 
 router.get('/', function(req, res, next) {
     var params = req.query;
     var session = req.session;
 
-    articleService.obtainAriticleFromUser(session.userGuid, params.direction, params.time).spread(checkResult).error(checkErr);
+    if (params.articleGuid == 0)
+        params.articleGuid = session.userGuid;
 
-    function checkResult(articleList, isFull){
+    articleService.obtainAriticleFromUser(session.userGuid, params.articleGuid, params.direction, params.time).then(checkResult).error(checkErr);
+
+    function checkResult(data){
         var packet = new MessagePacket();
         var msg = new ArticleMsg();
         packet.msg = msg;
         packet.result = true;
-        packet.msg.mIsTimeOut = isFull;
+        packet.msg.mIsTimeOut = data.isFull;
 
-        for(i = 0; i < articleList.length; ++i){
-            msg.mGuids.push(articleList[i].guid);
-            msg.mUserGuids.push(articleList[i].user_guid);
-            msg.mCornerGuids.push(articleList[i].corner_guid);
-            msg.mUserNames.push(articleList[i].corner_guid);
+        for(i = 0; i < data.records.articles.length; ++i){
+            var article = data.records.articles[i];
+            var corner = data.records.corners[i];
+            var comments = data.records.comments[i];
+            var uperCount = data.records.uperCounts[i];
+            var isUp = data.records.isUps[i];
 
+            msg.mGuids.push(article.guid);
+            msg.mUserGuids.push(article.user_guid);
+            msg.mUserNames.push(article.nickname);
+            msg.mHeadUrls.push(article.head_url);
+            msg.mTimes.push(article.date);
+            msg.mImageUrls.push(article.image_url);
+            msg.mFeelTexts.push(article.text);
+            msg.mUpCounts.push(article.text);
+            msg.mReadCounts.push(uperCount);
+            msg.mLocationGuids.push(corner.guid);
+            msg.mLocationNames.push(corner.name);
+            msg.mIsUps.push(isUp);
+
+            var comment = new CommentMsg();
+            comment.mArticleGuid = article.guid;
+            for (j = 0; j < comments.length; ++j){
+                comment.mGuids.push(comments[j].guid);
+                comment.mReplyGuids.push(comments[j].reply_guid);
+                comment.mReplyNames.push(comments[j].nickname);
+                comment.mHeadUrls.push(comments[j].head_url);
+                comment.mTargetGuids.push(comments[j].target_guid);
+                comment.mTargetNames.push(comments[j].nickname1);
+                comment.mFeelTexts.push(comment[j].text);
+                comment.mTimes.push(comment[j].date);
+            }
+
+            msg.mComments.push(comment);
         }
 
         res.json(packet);
     }
-
-
 
     function checkErr(e){
         var packet = new MessagePacket();

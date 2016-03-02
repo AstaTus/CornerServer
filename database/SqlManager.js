@@ -28,7 +28,7 @@ SqlManager.init = function(){
 SqlManager.excuteSqlAsync = function(sql, options){
 
     var sql = mysql.format(sql, options);
-    console.log(sql);
+    //console.log(sql);
     return SqlManager.mPool.queryAsync(sql, options);
 }
 

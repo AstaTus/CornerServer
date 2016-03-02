@@ -28,27 +28,27 @@ CommentModel.queryAllCommentsByArticle = function(articleGuid){
 }
 
 CommentModel.queryFreshCommentsByArticle = function(articleGuid, count){
-    CommentModel.queryAllCommentsByArticle = function(articleGuid){
+    var sql ='SELECT ' +
+                'comment.*, user.nickname, user.head_url, target.nickname, target.head_url ' +
+            'FROM (( ' +
+                'comment INNER JOIN user ' +
+            'ON ' +
+                'comment.article_guid = ? AND comment.reply_guid = user.guid) ' +
+            'LEFT JOIN user AS target ' +
+            'ON ' +
+                'comment.target_guid = target.guid) ' +
+            'ORDER BY ' +
+                'comment.date DESC ' +
+            'LIMIT ' +
+                '?';
 
-        var sql ='SELECT ' +
-                    'comment.*, user.nickname, user.image_url, ' +
-                    'target.nickname, target.image_url ' +
-                 'FROM ' +
-                    'comment INNER JOIN user ' +
-                    'INNER JOIN user AS target ' +
-                 'WHERE ' +
-                    'comment.article_guid = ? AND ' +
-                    'comment.reply_guid = user.guid AND ' +
-                    'comment.target_guid = target.guid ' +
-                'ORDER BY ' +
-                    'comment.date DESC ' +
-                'LIMIT ' +
-                    '?';
+    var options = [articleGuid, count];
 
-        var options = [articleGuid, count];
+    return sqlManager.excuteSqlAsync(sql, options);
+}
 
-        return sqlManager.excuteSqlAsync(sql, options);
-    }
+CommentModel.queryAllCommentsByArticle = function(articleGuid) {
+
 }
 
 module.exports = CommentModel;
