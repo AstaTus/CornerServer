@@ -10,19 +10,11 @@ var publishService = require("../../service/PublishService");
 var Promise = require('bluebird');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-var pictureConfig = require('../../config/PictureConfig');
-var uuid = require('node-uuid');
 
 router.post('/', function(req, res, next) {
     var form = new formidable.IncomingForm();
     var session = req.session;
-    var path = pictureConfig.rootPath + session.userGuid;
-    form.uploadDir = path;
     form.keepExtensions = true;
-
-    if (!fs.existsSync(path)){
-        mkdirp.sync(path, 0777)
-    }
 
     form.parse(req, function(err, fields, files) {
 
@@ -32,23 +24,19 @@ router.post('/', function(req, res, next) {
             packet.resultCode = MessagePacket.RESULT_CODE_PARAM_ERROR;
             res.json(packet);
         }else{
-            var fileName = uuid.v1();
-            fs.renameSync(files.image.path, form.uploadDir + '/' + fileName);
-            publishService.publishArticle(session.userGuid, 1, session.userGuid + '/' + fileName, fields.text)
+            publishService.publishArticle(session.userGuid, 1, files.image.path, fields.text)
                 .then(checkResult)
                 .error(checkErr);
         }
     });
 
-
-
-    function createDir(exists){
+   /* function createDir(exists){
         if (!exists){
             return fs.mkdirAsync(path);
         }else{
             return promise.resolve();
         }
-    }
+    }*/
 
     function checkResult(insertGuid){
         var packet = new MessagePacket();

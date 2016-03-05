@@ -18,7 +18,7 @@ ArticleService.REQUEST_DIRECTION_DOWN = 2;
 ArticleService.REQUEST_NEXT_PAGE_COUNT = 3;
 ArticleService.REQUEST_NEWER_PAGE_COUNT = 6;
 
-ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, direction, time){
+ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, articleGuid, direction){
     var conditon;
     var count;
     var records = {
@@ -26,7 +26,12 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, dire
         corners:new Array(),
         comments:new Array(),
         uperCounts:new Array(),
-        isUps:new Array()
+        isUps:new Array(),
+        user:{
+            guid:0,
+            name:'',
+            headUrl:'',
+        }
     }
     if(direction == ArticleService.REQUEST_DIRECTION_UP){
         conditon = articleModel.MORE_TIME_CONDITION;
@@ -36,13 +41,36 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, dire
         count = ArticleService.REQUEST_NEXT_PAGE_COUNT;
     }
 
-    return findArticles().then(findRelativeDatas).then(resolve);
+    return findArticleUser()
+        .then(checkArticleUser)
+        .then(findUserArticles)
+        .then(findRelativeDatas)
+        .then(resolve);
 
-
-    function findArticles(){
-        return articleModel.
-            queryArticleByUser(articleUserGuid, conditon, time, count)
+    function findArticleUser(){
+        return userModel.queryUserByGuid(articleUserGuid);
     }
+
+    function checkArticleUser(user){
+        if (user){
+            records.user.guid = user.guid;
+            records.user.name = user.nickname;
+            records.user.headUrl = user.head_url;
+
+            return;
+
+        }else{
+                return return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+        }
+
+    }
+
+    function findUserArticles(){
+        return articleModel.
+            queryArticleByUser(articleUserGuid, articleGuid, conditon, count)
+    }
+
+
 
 
     function findRelativeDatas(articles){

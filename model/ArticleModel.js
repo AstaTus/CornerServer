@@ -8,9 +8,10 @@ var ArticleEntity = require("../entity/ArticleEntity")
 var promise = require('bluebird')
 var ArticleModel = function(){}
 
-ArticleModel.insertArticle = function(userGuid, cornerGuid, date, imageUrl, text){
-    var sql = 'INSERT INTO article (user_guid, corner_guid, date, image_uri, text) VALUES (?, ?, ?, ?, ?);';
-    var options = [userGuid, cornerGuid, date, imageUrl, text];
+///////只考虑单库
+ArticleModel.insertArticle = function(userGuid, cornerGuid, imageUrl, text){
+    var sql = 'INSERT INTO article (user_guid, corner_guid, image_uri, text) VALUES (?, ?, ?, ?);';
+    var options = [userGuid, cornerGuid, imageUrl, text];
 
     return sqlManager.excuteSqlAsync(sql, options).then(checkResult);
 
@@ -25,55 +26,52 @@ ArticleModel.insertArticle = function(userGuid, cornerGuid, date, imageUrl, text
 ArticleModel.MORE_TIME_CONDITION = 1;
 ArticleModel.LESS_TIME_CONDITION = 2;
 
-ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
+ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCount){
     var sql;
     var options;
-    //time 为空的情况
-    if(time == null || time == ''){
+    //拉去最新的article
+    if(articleGuid == 0){
         sql = 'SELECT ' +
-                  'article.*, user.nickname, user.head_url ' +
+                  '* ' +
               'FROM ' +
-                  'article INNER JOIN user ' +
+                  'article ' +
               'WHERE ' +
-                  'article.user_guid = ? AND ' +
-                  'article.user_guid = user.guid ' +
+                  'user_guid = ? ' +
               'ORDER BY ' +
-                  'date DESC ' +
+                  'article.guid DESC ' +
               'LIMIT ' +
                  '?;';
         options = [guid, maxCount];
-    }//大于date时间的数据, 单服情况下不会有date重复的问题,date精度到毫秒
+    }//拉取比该articleGuid新的article
     else if (condition == ArticleModel.MORE_TIME_CONDITION){
         sql = 'SELECT ' +
-                'article.*, user.nickname, user.head_url ' +
+                '* ' +
             'FROM ' +
-                'article INNER JOIN user ' +
+                'article ' +
             'WHERE ' +
                 'article.user_guid = ? AND ' +
-                'article.date > ? AND ' +
-                'article.user_guid = user.guid ' +
+                'article.guid > ? ' + +
             'ORDER BY ' +
-                'date DESC ' +
+                'article.guid DESC ' +
             'LIMIT ' +
                 '?;';
         //sql = 'SELECT * FROM article WHERE user_guid = ? AND date > STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
-        options = [guid, time, maxCount];
+        options = [guid, articleGuid, maxCount];
     }//小于date时间的数据
     else{
         sql = 'SELECT ' +
-                'article.*, user.nickname, user.head_url ' +
+                '* ' +
             'FROM ' +
-                'article INNER JOIN user ' +
+                'article ' +
             'WHERE ' +
                 'article.user_guid = ? AND ' +
-                'article.date < ? AND ' +
-                'article.user_guid = user.guid ' +
+                'article.guid < ? ' +
             'ORDER BY ' +
-                'date DESC ' +
+                'article.guid DESC ' +
             'LIMIT ' +
                 '?;';
         //sql = 'SELECT * FROM article WHERE user_guid = ? AND date < STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
-        options = [guid, time, maxCount];
+        options = [guid, articleGuid, maxCount];
     }
 
     return sqlManager.excuteSqlAsync(sql, options);
@@ -96,4 +94,4 @@ ArticleModel.queryArticleByUser = function(guid, condition, time, maxCount){
     }*/
 }
 
-module.exports =  ArticleModel;
+module.exports = ArticleModel;

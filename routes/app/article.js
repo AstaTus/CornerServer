@@ -12,10 +12,10 @@ router.get('/', function(req, res, next) {
     var params = req.query;
     var session = req.session;
 
-    if (params.articleGuid == 0)
-        params.articleGuid = session.userGuid;
-
-    articleService.obtainAriticleFromUser(session.userGuid, params.articleGuid, params.direction, params.time).then(checkResult).error(checkErr);
+    articleService
+        .obtainAriticleFromUser(session.userGuid, params.articleUserGuid, params.articleGuid, params.direction)
+        .then(checkResult)
+        .error(checkErr);
 
     function checkResult(data){
         var packet = new MessagePacket();
@@ -23,6 +23,8 @@ router.get('/', function(req, res, next) {
         packet.msg = msg;
         packet.result = true;
         packet.msg.mIsTimeOut = data.isFull;
+
+        var user = data.records.user;
 
         for(i = 0; i < data.records.articles.length; ++i){
             var article = data.records.articles[i];
@@ -32,9 +34,9 @@ router.get('/', function(req, res, next) {
             var isUp = data.records.isUps[i];
 
             msg.mGuids.push(article.guid);
-            msg.mUserGuids.push(article.user_guid);
-            msg.mUserNames.push(article.nickname);
-            msg.mHeadUrls.push(article.head_url);
+            msg.mUserGuids.push(user.guid);
+            msg.mUserNames.push(user.name);
+            msg.mHeadUrls.push(user.headUrl);
             var time = moment(article.date);
             msg.mTimes.push(time.format('YYYY-MM-DD hh:mm:ss'));
             msg.mImageUrls.push(article.image_url);

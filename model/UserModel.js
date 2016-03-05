@@ -4,8 +4,9 @@
 
 sqlManager = require('../database/SqlManager')
 log = require('../util/Log')
-var UserEntity = require("../entity/UserEntity")
 var promise = require('bluebird')
+var CodeConfig = require('../config/CodeConfig')
+
 var UserModel = function(){}
 
 UserModel.insertUser = function(email, password, nickname, birth, sex){
@@ -37,12 +38,9 @@ UserModel.queryUserByEmail = function(email){
         }else if (records.length > 1){
             //记录日志
             log.getCurrent().fatal("UserModel.queryUserByEmail: user record is rpeat");
-            return null;
+            return promise.reject(new Error(CodeConfig.USER_REPEAT));
         }else{
-            var user = new UserEntity();
-            user.fromDatabase(records[0]);
-
-            return user;
+            return records[0];
         }
     }
 }
@@ -61,12 +59,9 @@ UserModel.queryUserByGuid = function(guid){
         }else if (records.length > 1){
             //记录日志
             log.getCurrent().fatal("UserModel.queryUserByGuid: user record is rpeat");
-            return promise;
+            return promise.reject(new Error(CodeConfig.USER_REPEAT));
         }else{
-            var user = new UserEntity();
-            user.fromDatabase(rows[0]);
-
-            return user;
+            return records[0];
         }
     }
 }
@@ -85,12 +80,9 @@ UserModel.queryUserByNickname = function(nickname){
         }else if (records.length > 1){
             //记录日志
             log.getCurrent().fatal("UserModel.queryUserByNickname: user record is rpeat");
-            return promise;
+            return promise.reject(new Error(CodeConfig.USER_REPEAT));
         }else{
-            var user = new UserEntity();
-            user.fromDatabase(rows[0]);
-
-            return user;
+            return records[0];
         }
     }
 }
