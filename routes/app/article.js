@@ -12,6 +12,10 @@ router.get('/', function(req, res, next) {
     var params = req.query;
     var session = req.session;
 
+    if(params.articleUserGuid == 0){
+        params.articleUserGuid = session.userGuid;
+    }
+
     articleService
         .obtainAriticleFromUser(session.userGuid, params.articleUserGuid, params.articleGuid, params.direction)
         .then(checkResult)
@@ -26,7 +30,7 @@ router.get('/', function(req, res, next) {
 
         var user = data.records.user;
 
-        for(i = 0; i < data.records.articles.length; ++i){
+        for(var i = 0; i < data.records.articles.length; ++i){
             var article = data.records.articles[i];
             var corner = data.records.corners[i];
             var comments = data.records.comments[i];

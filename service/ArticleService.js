@@ -60,9 +60,8 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
             return;
 
         }else{
-                return return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+                return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
         }
-
     }
 
     function findUserArticles(){

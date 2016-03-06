@@ -82,8 +82,8 @@ UserService.login = function(email, password){
     function checkUser(user){
         if(user == null)
             return [CodeConfig.LOGIN_EMAIL_NOT_EXIST, 0];
-        else if (user.mPassword == password)
-            return [CodeConfig.LOGIN_SUCCESS, user.mGuid];
+        else if (user.password == password)
+            return [CodeConfig.LOGIN_SUCCESS, user.guid];
         else
             return [CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR, 0];
     }
