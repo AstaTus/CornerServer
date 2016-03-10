@@ -11,6 +11,7 @@ var moment = require('moment');
 var oss = require('ali-oss');
 var co = require('co');
 var uuid = require('node-uuid');
+var urlencode = require('urlencode');
 
 PublishService = function(){
 }
@@ -51,7 +52,7 @@ PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
 
             if(object.res.status == '200'){
                 isUpdateSucess = true;
-                imagePath = object.url;
+                imagePath = urlencode(path);
             }
         });
     }

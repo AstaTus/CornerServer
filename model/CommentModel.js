@@ -29,7 +29,7 @@ CommentModel.queryAllCommentsByArticle = function(articleGuid){
 
 CommentModel.queryFreshCommentsByArticle = function(articleGuid, count){
     var sql ='SELECT ' +
-                'comment.*, user.nickname, user.head_url, target.nickname, target.head_url ' +
+                'comment.*, user.nickname, user.head_path, target.nickname, target.head_path ' +
             'FROM (( ' +
                 'comment INNER JOIN user ' +
             'ON ' +

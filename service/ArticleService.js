@@ -30,7 +30,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         user:{
             guid:0,
             name:'',
-            headUrl:'',
+            headPath:'',
         }
     }
     if(direction == ArticleService.REQUEST_DIRECTION_UP){
@@ -55,7 +55,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         if (user){
             records.user.guid = user.guid;
             records.user.name = user.nickname;
-            records.user.headUrl = user.head_url;
+            records.user.headPath = user.head_path;
 
             return;
 

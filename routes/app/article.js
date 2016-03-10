@@ -40,10 +40,10 @@ router.get('/', function(req, res, next) {
             msg.mGuids.push(article.guid);
             msg.mUserGuids.push(user.guid);
             msg.mUserNames.push(user.name);
-            msg.mHeadUrls.push(user.headUrl);
+            msg.mHeadUrls.push(user.headPath);
             var time = moment(article.date);
             msg.mTimes.push(time.format('YYYY-MM-DD hh:mm:ss'));
-            msg.mImageUrls.push(article.image_url);
+            msg.mImagePaths.push(article.image_path);
             msg.mFeelTexts.push(article.text);
             msg.mUpCounts.push(uperCount);
             msg.mReadCounts.push(article.read_count);
@@ -57,7 +57,7 @@ router.get('/', function(req, res, next) {
                 comment.mGuids.push(comments[j].guid);
                 comment.mReplyGuids.push(comments[j].reply_guid);
                 comment.mReplyNames.push(comments[j].nickname);
-                comment.mHeadUrls.push(comments[j].head_url);
+                comment.mHeadUrls.push(comments[j].head_path);
                 comment.mTargetGuids.push(comments[j].target_guid);
                 comment.mTargetNames.push(comments[j].nickname1);
                 comment.mFeelTexts.push(comment[j].text);

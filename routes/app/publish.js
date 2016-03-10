@@ -8,20 +8,26 @@ var PublishMsg = require("../../message/PublishMsg");
 var formidable = require('formidable');
 var publishService = require("../../service/PublishService");
 var Promise = require('bluebird');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
+
 
 router.post('/', function(req, res, next) {
     var form = new formidable.IncomingForm();
     var session = req.session;
     form.keepExtensions = true;
-
+    form.maxFieldsSize = 2 * 1024;
     form.parse(req, function(err, fields, files) {
 
         if (err != null || files.image == null || fields.location == null){
             var packet = new MessagePacket();
             packet.result = MessagePacket.RESULT_FAILED;
             packet.resultCode = MessagePacket.RESULT_CODE_PARAM_ERROR;
+            res.json(packet);
+        }else if(files.image.size > 5 * 1024 * 1024) {
+            var packet = new MessagePacket();
+            packet.msg = new PublishMsg();
+            packet.result = true;
+            packet.msg.mResult = false;
+            packet.msg.mCode = PublishMsg.CODE_IMAGE_IS_MORE_THAN_5MB;
             res.json(packet);
         }else{
             publishService.publishArticle(session.userGuid, 1, files.image.path, fields.text)

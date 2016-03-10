@@ -5,7 +5,7 @@ function ArticleMsg(){
     this.mUserNames = new Array();
     this.mHeadUrls = new Array();
     this.mTimes = new Array();
-    this.mImageUrls = new Array();
+    this.mImagePaths = new Array();
     this.mFeelTexts = new Array();
     this.mUpCounts = new Array();
     this.mReadCounts = new Array();

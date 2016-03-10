@@ -10,7 +10,7 @@ var ArticleModel = function(){}
 
 ///////只考虑单库
 ArticleModel.insertArticle = function(userGuid, cornerGuid, imageUrl, text){
-    var sql = 'INSERT INTO article (user_guid, corner_guid, image_uri, text, date) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP);';
+    var sql = 'INSERT INTO article (user_guid, corner_guid, image_path, text, date) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP);';
     var options = [userGuid, cornerGuid, imageUrl, text];
 
     return sqlManager.excuteSqlAsync(sql, options).then(checkResult);
