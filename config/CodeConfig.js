@@ -5,6 +5,8 @@
  * 该Code属于服务器内部使用*/
 function CodeConfig(){
 }
+/*********************************DATABASE********************************************/
+CodeConfig.DATABASE_ERROR = 1000;
 
 /*********************************COMMON********************************************/
 CodeConfig.COMMON_INSERT_SUCCESS = 0;
@@ -33,4 +35,8 @@ CodeConfig.CORNER_NOT_EXIST = 170;
 CodeConfig.USER_REPEAT = 180;
 CodeConfig.USER_NOT_EXIST = 181;
 
+/*********************************ARTICLE********************************************/
+CodeConfig.ARTICLE_NOT_EXIST = 190;
+CodeConfig.ARTICLE_NO_POWER = 191;
+CodeConfig.ARTICLE_SUCCESS_DELETE = 192;
 module.exports = CodeConfig

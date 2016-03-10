@@ -50,14 +50,14 @@ ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCoun
                 'article ' +
             'WHERE ' +
                 'article.user_guid = ? AND ' +
-                'article.guid > ? ' + +
+                'article.guid > ? ' +
             'ORDER BY ' +
                 'article.guid DESC ' +
             'LIMIT ' +
                 '?;';
         //sql = 'SELECT * FROM article WHERE user_guid = ? AND date > STR_TO_DATE(?, "%Y-%m-%d %T") ORDER BY date DESC LIMIT ?';
         options = [guid, articleGuid, maxCount];
-    }//小于date时间的数据
+    }//
     else{
         sql = 'SELECT ' +
                 '* ' +
@@ -92,6 +92,20 @@ ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCoun
         }
         return [records, isFull];
     }*/
+}
+
+ArticleModel.queryArticleByGuid = function(articleGuid){
+    var sql = 'SELECT * FROM article WHERE guid = ?';
+    var options = [articleGuid];
+
+    return sqlManager.excuteSqlAsync(sql, options);
+}
+
+ArticleModel.deleteArticle = function(articleGuid){
+    var sql = 'DELETE * FROM article WHERE guid = ?';
+    var options = [articleGuid];
+
+    return sqlManager.excuteSqlAsync(sql, options);
 }
 
 module.exports = ArticleModel;

@@ -14,11 +14,12 @@ var sqlMgr = require("./database/SqlManager");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var register = require('./routes/app/register');
-var login = require('./routes/app/login');
-var logout = require('./routes/app/logout');
-var publish = require('./routes/app/publish');
-var article = require('./routes/app/article');
+var register = require('./routes/app/Register');
+var login = require('./routes/app/Login');
+var logout = require('./routes/app/Logout');
+var publish = require('./routes/app/Publish');
+var article = require('./routes/app/Article');
+var up = require('./routes/app/Up');
 var bsend = require('./routes/send');
 var index = require('./routes/index');
 var app = express();
@@ -64,11 +65,12 @@ app.use(/^(?!(?:\/app\/login|\/app\/register)$)/, function(req, res, next) {
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/app/register', register)
-app.use('/app/login', login)
-app.use('/app/logout', logout)
-app.use('/app/publish', publish)
-app.use('/app/article', article)
+app.use('/app/Register', register)
+app.use('/app/Login', login)
+app.use('/app/Logout', logout)
+app.use('/app/Publish', publish)
+app.use('/app/Article', article)
+app.use('/app/Up', up)
 app.use('/send', bsend)
 
 app.use('/index', index)

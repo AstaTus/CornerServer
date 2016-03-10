@@ -7,6 +7,7 @@ var userModel = require('../model/UserModel')
 var cornerModel = require('../model/CornerModel')
 var commentModel = require('../model/CommentModel')
 var upModel = require('../model/upModel')
+var CodeConfig = require("../config/CodeConfig")
 var promise = require('bluebird')
 ArticleService = function(){
 }
@@ -76,7 +77,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         return promise.all(promise.map(articles, function(article) {
              return promise.join(article,
                 cornerModel.queryCornerByGuid(article.corner_guid),
-                 commentModel.queryFreshCommentsByArticle(article.guid, 3),
+                 commentModel.queryCommentsByArticle(article.guid, 3, CommentModel.NO_CONDITION, 0),
                 upModel.queryUserGuidsByArticle(article.guid),
                 handleRelativeData);
         }));
@@ -111,6 +112,32 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         };
 
         return data;
+    }
+}
+
+ArticleService.deleteAriticleByGuid = function(userGuid, articleGuid){
+
+    return articleModel
+        .queryArticleByGuid(articleGuid).then(checkArticle);
+
+    function checkArticle(article){
+
+        if (article){
+            if (article.user_guid == userGuid){
+                return articleModel.deleteArticle(articleGuid);
+            }else{
+                return CodeConfig.ARTICLE_NO_POWER;
+            }
+        }else{
+            return CodeConfig.ARTICLE_NOT_EXIST;
+        }
+    }
+
+    function resolve(result){
+        if (result){
+            return CodeConfig.ARTICLE_SUCCESS_DELETE;
+        }
+        return CodeConfig.DATABASE_ERROR;
     }
 }
 

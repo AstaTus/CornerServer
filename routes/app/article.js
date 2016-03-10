@@ -5,10 +5,10 @@ var express = require('express');
 var router = express.Router();
 var MessagePacket = require("../../message/MessagePacket");
 var ArticleMsg = require("../../message/ArticleMsg");
-var CommentMsg = require("../../message/ArticleMsg");
+var ArticleDeleteMsg = require("../../message/ArticleDeleteMsg");
 var articleService = require("../../service/ArticleService");
 var moment = require('moment');
-router.get('/', function(req, res, next) {
+router.get('/Obtain', function(req, res, next) {
     var params = req.query;
     var session = req.session;
 
@@ -53,7 +53,7 @@ router.get('/', function(req, res, next) {
 
             var comment = new CommentMsg();
             comment.mArticleGuid = article.guid;
-            for (j = 0; j < comments.length; ++j){
+            for (var j = 0; j < comments.length; ++j){
                 comment.mGuids.push(comments[j].guid);
                 comment.mReplyGuids.push(comments[j].reply_guid);
                 comment.mReplyNames.push(comments[j].nickname);
@@ -78,4 +78,31 @@ router.get('/', function(req, res, next) {
     }
 });
 
+router.post('/Delete', function(req, res, next) {
+    var params = req.body;
+    var session = req.session;
+
+    articleService
+        .deleteAriticleByGuid(session.userGuid, params.articleGuid)
+        .then(checkResult)
+        .then(checkErr);
+
+    function checkResult(result){
+        var packet = new MessagePacket();
+        var msg = new ArticleDeleteMsg();
+        packet.msg = msg;
+        packet.result = true;
+        packet.msg.mIsTimeOut = data.isFull;
+
+        res.json(packet);
+    }
+
+    function checkErr(e){
+        var packet = new MessagePacket();
+        packet.result = false;
+        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        res.json(packet);
+    }
+
+});
 module.exports = router;

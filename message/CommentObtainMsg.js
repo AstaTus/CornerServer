@@ -1,4 +1,4 @@
-function CommentMsg(){
+function CommentObtainMsg(){
     this.mArticleGuid;
     this.mGuids = new Array();
     this.mReplyGuids = new Array();
@@ -13,4 +13,4 @@ function CommentMsg(){
 }
 
 
-module.exports = CommentMsg
+module.exports = CommentObtainMsg
