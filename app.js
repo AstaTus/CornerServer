@@ -11,7 +11,7 @@ const MongoStore = require('connect-mongo')(session);
 promise.promisifyAll(session);
 var BaseMsg = require('./message/MessagePacket');
 var sqlMgr = require("./database/SqlManager");
-
+var MessagePacket = require("./message/MessagePacket");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var register = require('./routes/app/Register');
@@ -46,7 +46,7 @@ app.use(session({
 }))
 
 //除了login 和 register 不需要session 验证 其他需要
-app.use(/^(?!(?:\/app\/login|\/app\/register)$)/, function(req, res, next) {
+app.use(/^(?!(?:\/app\/Login|\/app\/Register)$)/, function(req, res, next) {
   var session = req.session;
   if(session == null){
     var msg = new BaseMsg();
@@ -88,10 +88,10 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    var packet = new MessagePacket();
+    packet.result = false;
+    packet.resultCode = MessagePacket.RESULT_CODE_HTTP_500_ERROR;
+    res.json(packet);
   });
 }
 
@@ -99,10 +99,10 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  var packet = new MessagePacket();
+  packet.result = false;
+  packet.resultCode = MessagePacket.RESULT_CODE_HTTP_500_ERROR;
+  res.json(packet);
 });
 
 sqlMgr.init();

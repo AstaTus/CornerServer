@@ -39,4 +39,11 @@ CodeConfig.USER_NOT_EXIST = 181;
 CodeConfig.ARTICLE_NOT_EXIST = 190;
 CodeConfig.ARTICLE_NO_POWER = 191;
 CodeConfig.ARTICLE_SUCCESS_DELETE = 192;
+
+/*********************************UP********************************************/
+CodeConfig.UP_MAKE = 200;
+CodeConfig.UP_CANCEL = 201;
+CodeConfig.UP_CANCEL_NOT_SINGLE = 202;
+CodeConfig.UP_MAKE_NOT_SINGLE = 203;
+CodeConfig.UP_RECORD_NOT_SINGLE = 204;
 module.exports = CodeConfig

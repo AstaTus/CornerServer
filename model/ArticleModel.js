@@ -2,8 +2,8 @@
  * Created by AstaTus on 2016/2/14.
  */
 
-sqlManager = require('../database/SqlManager')
-log = require('../util/Log')
+var sqlManager = require('../database/SqlManager')
+var log = require('../util/Log')
 var ArticleEntity = require("../entity/ArticleEntity")
 var promise = require('bluebird')
 var ArticleModel = function(){}

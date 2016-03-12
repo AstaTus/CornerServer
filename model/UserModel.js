@@ -2,8 +2,8 @@
  * Created by AstaTus on 2015/12/7.
  */
 
-sqlManager = require('../database/SqlManager')
-log = require('../util/Log')
+var sqlManager = require('../database/SqlManager')
+var log = require('../util/Log')
 var promise = require('bluebird')
 var CodeConfig = require('../config/CodeConfig')
 

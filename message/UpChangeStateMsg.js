@@ -3,7 +3,7 @@ function UpChangeStateMsg(){
     this.mIsUp;
 
 }
-UpChangeStateMsg.CODE_UP_STATE = 1;
-UpChangeStateMsg.CODE_UNUP_STATE = 2;
+UpChangeStateMsg.CODE_UP_STATE = true;
+UpChangeStateMsg.CODE_UNUP_STATE = false;
 
 module.exports = UpChangeStateMsg

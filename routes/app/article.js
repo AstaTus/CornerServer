@@ -6,6 +6,7 @@ var router = express.Router();
 var MessagePacket = require("../../message/MessagePacket");
 var ArticleMsg = require("../../message/ArticleMsg");
 var ArticleDeleteMsg = require("../../message/ArticleDeleteMsg");
+var CommentBlock = require("../../message/CommentBlock");
 var articleService = require("../../service/ArticleService");
 var moment = require('moment');
 router.get('/Obtain', function(req, res, next) {
@@ -51,20 +52,24 @@ router.get('/Obtain', function(req, res, next) {
             msg.mLocationNames.push(corner.name);
             msg.mIsUps.push(isUp);
 
-            var comment = new CommentMsg();
-            comment.mArticleGuid = article.guid;
+            var comments = new Array();
+
             for (var j = 0; j < comments.length; ++j){
-                comment.mGuids.push(comments[j].guid);
-                comment.mReplyGuids.push(comments[j].reply_guid);
-                comment.mReplyNames.push(comments[j].nickname);
-                comment.mHeadUrls.push(comments[j].head_path);
-                comment.mTargetGuids.push(comments[j].target_guid);
-                comment.mTargetNames.push(comments[j].nickname1);
-                comment.mFeelTexts.push(comment[j].text);
-                comment.mTimes.push(comment[j].date);
+                var comment = new CommentBlock();
+                comment.mArticleGuid = article.guid;
+                comment.mGuid = comments[j].guid;
+                comment.mReplyGuid = comments[j].reply_guid;
+                comment.mReplyName = comments[j].nickname;
+                comment.mHeadUrl = comments[j].head_path;
+                comment.mTargetGuid = comments[j].target_guid;
+                comment.mTargetName = comments[j].nickname1;
+                comment.mFeelText = comment[j].text;
+                comment.mTime = comment[j].date;
+
+                comments.push(comment);
             }
 
-            msg.mComments.push(comment);
+            msg.mComments.push(comments);
         }
 
         res.json(packet);
@@ -92,7 +97,7 @@ router.post('/Delete', function(req, res, next) {
         var msg = new ArticleDeleteMsg();
         packet.msg = msg;
         packet.result = true;
-        packet.msg.mIsTimeOut = data.isFull;
+        packet.msg.mResult = true;
 
         res.json(packet);
     }
