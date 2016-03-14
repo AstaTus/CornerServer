@@ -30,15 +30,16 @@ router.get('/Obtain', function(req, res, next) {
         for (var i = 0; i < data.comments.length; ++i){
             var block = new CommentBlock();
 
-            block.mGuid = data.comments[i];
-            block.mArticleGuid = data.comments[i];
+            block.mGuid = data.comments[i].guid;
+            block.mArticleGuid = data.comments[i].article_guid;
             block.mReplyGuid = data.comments[i].reply_guid;
             block.mReplyName = data.comments[i].nickname;
             block.mHeadUrl = data.comments[i].head_path;
 
             block.mTargetGuid = data.comments[i].target_guid;
             block.mTargetName = data.comments[i].nickname1;
-            block.mTime = data.comments[i].date;
+            var time = moment(data.comments[i].date);
+            block.mTime = time.format('YYYY-MM-DD hh:mm:ss');
             block.mText = data.comments[i].text;
             msg.mCommentBlocks.push(block);
         }
@@ -57,6 +58,10 @@ router.get('/Obtain', function(req, res, next) {
 router.post('/Add', function(req, res, next) {
     var params = req.body;
     var session = req.session;
+
+    if (params.targetGuid == 0){
+        params.targetGuid = null;
+    }
 
     commentService
         .addComment(params.articleGuid, session.userGuid, params.targetGuid, params.text)
