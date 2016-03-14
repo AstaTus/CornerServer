@@ -20,6 +20,7 @@ var logout = require('./routes/app/Logout');
 var publish = require('./routes/app/Publish');
 var article = require('./routes/app/Article');
 var up = require('./routes/app/Up');
+var comment = require('./routes/app/Comment');
 var bsend = require('./routes/send');
 var index = require('./routes/index');
 var app = express();
@@ -71,6 +72,7 @@ app.use('/app/Logout', logout)
 app.use('/app/Publish', publish)
 app.use('/app/Article', article)
 app.use('/app/Up', up)
+app.use('/app/Comment', comment)
 app.use('/send', bsend)
 
 app.use('/index', index)

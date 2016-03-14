@@ -100,7 +100,6 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
     }
 
     function resolve(){
-
         var isFull = false;
         if (records.length == count){
             isFull = true;

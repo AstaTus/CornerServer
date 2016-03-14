@@ -5,12 +5,21 @@ sqlManager = require('../database/SqlManager')
 var log = require('../util/Log')
 var promise = require('bluebird')
 var CommentModel = function(){}
-
+var moment = require('moment');
 CommentModel.insertComment = function(articleGuid, replyGuid, targetGuid, text){
-    var sql = 'INSERT INTO comment (article_guid, reply_guid, target_guid, text) VALUES (?, ?, ?, ?);';
-    var options = [articleGuid, replyGuid, targetGuid, text];
+    var current_time =  moment().format("YYYY-MM-DD HH:mm:ss");
 
-    return sqlManager.excuteSqlAsync(sql, options);
+    var sql = 'INSERT INTO comment (article_guid, reply_guid, target_guid, text, date) VALUES (?, ?, ?, ?, ?);';
+    var options = [articleGuid, replyGuid, targetGuid, text, current_time];
+
+    return sqlManager.excuteSqlAsync(sql, options).then(resolve);
+
+    function resolve(packet){
+        return{
+            guid:packet.insertId,
+            time:current_time
+        }
+    }
 }
 
 CommentModel.deleteComment = function(guid){
