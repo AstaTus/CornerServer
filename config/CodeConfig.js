@@ -46,4 +46,8 @@ CodeConfig.UP_CANCEL = 201;
 CodeConfig.UP_CANCEL_NOT_SINGLE = 202;
 CodeConfig.UP_MAKE_NOT_SINGLE = 203;
 CodeConfig.UP_RECORD_NOT_SINGLE = 204;
+
+/*********************************CORNER********************************************/
+CodeConfig.CORNER_ADD_ERROR = 220;
+CodeConfig.CORNER_DATABASE_INSERT_ERROR = 221;
 module.exports = CodeConfig

@@ -30,8 +30,8 @@ CommentModel.deleteComment = function(guid){
 }
 
 CommentModel.NO_CONDITION = 0;
-CommentModel.MORE_TIME_CONDITION = 1;
-CommentModel.LESS_TIME_CONDITION = 2;
+CommentModel.NEW_CONDITION = 1;
+CommentModel.OLD_CONDITION = 2;
 
 CommentModel.queryCommentsByArticle = function(articleGuid, maxCount, condition, commentGuid){
 
@@ -53,7 +53,7 @@ CommentModel.queryCommentsByArticle = function(articleGuid, maxCount, condition,
                 '?';
 
             options = [articleGuid, maxCount];
-    }else if(condition == CommentModel.MORE_TIME_CONDITION){
+    }else if(condition == CommentModel.NEW_CONDITION){
         sql ='SELECT ' +
                 'comment.*, user.nickname, user.head_path, target.nickname, target.head_path ' +
             'FROM (( ' +

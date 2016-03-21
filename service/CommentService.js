@@ -8,18 +8,18 @@ var promise = require('bluebird')
 CommentService = function(){
 }
 
-CommentService.REQUEST_NEXT_PAGE_COUNT = 3;
-CommentService.REQUEST_NEW_PAGE_COUNT = 6;
+CommentService.REQUEST_NEXT_PAGE_COUNT = 15;
+CommentService.REQUEST_NEW_PAGE_COUNT = 15;
 
 CommentService.obtainCommentFromArticle = function(articleGuid, commentGuid, direction) {
 
     var condtion;
     var maxCount;
     if(direction == ArticleService.REQUEST_DIRECTION_UP){
-        conditon = commentModel.MORE_TIME_CONDITION;
+        conditon = commentModel.NEW_CONDITION;
         maxCount = CommentService.REQUEST_NEW_PAGE_COUNT;
     }else{
-        conditon = commentModel.LESS_TIME_CONDITION;
+        conditon = commentModel.OLD_CONDITION;
         maxCount = CommentService.REQUEST_NEXT_PAGE_COUNT;
     }
 

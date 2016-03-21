@@ -16,7 +16,7 @@ router.get('/Obtain', function(req, res, next) {
     var params = req.query;
     var session = req.session;
     commentService
-        .obtainCommentFromArticle(params.articleGuid, params.commentGuid, params.directon)
+        .obtainCommentFromArticle(params.articleGuid, params.commentGuid, params.direction)
         .then(checkResult)
         .error(checkErr);
 

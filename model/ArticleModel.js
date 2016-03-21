@@ -23,8 +23,8 @@ ArticleModel.insertArticle = function(userGuid, cornerGuid, imageUrl, text){
     }
 }
 
-ArticleModel.MORE_TIME_CONDITION = 1;
-ArticleModel.LESS_TIME_CONDITION = 2;
+ArticleModel.NEW_CONDITION = 1;
+ArticleModel.OLD_CONDITION = 2;
 
 ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCount){
     var sql;
@@ -43,7 +43,7 @@ ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCoun
                  '?;';
         options = [guid, maxCount];
     }//拉取比该articleGuid新的article
-    else if (condition == ArticleModel.MORE_TIME_CONDITION){
+    else if (condition == ArticleModel.NEW_CONDITION){
         sql = 'SELECT ' +
                 '* ' +
             'FROM ' +

@@ -35,10 +35,10 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         }
     }
     if(direction == ArticleService.REQUEST_DIRECTION_UP){
-        conditon = articleModel.MORE_TIME_CONDITION;
+        conditon = articleModel.NEW_CONDITION;
         count = ArticleService.REQUEST_NEWER_PAGE_COUNT;
     }else{
-        conditon = articleModel.LESS_TIME_CONDITION;
+        conditon = articleModel.OLD_CONDITION;
         count = ArticleService.REQUEST_NEXT_PAGE_COUNT;
     }
 

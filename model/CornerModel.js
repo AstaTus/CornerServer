@@ -8,17 +8,17 @@ var CornerEntity = require("../entity/CornerEntity")
 var promise = require('bluebird')
 var CornerModel = function(){}
 
-CornerModel.insertCorner = function(finderGuid, name, location){
-    var sql = 'INSERT INTO corner (finder_guid, name, location) VALUES (?, ?, ?);';
-    var options = [finderGuid, name, location];
+CornerModel.insertCorner = function(guid, userGuid, name, location){
+    var sql = 'INSERT INTO corner (guid, finder_guid, toper_guid, name, location) VALUES (?, ?, ?, ?, ?);';
+    var options = [guid, userGuid, userGuid, name, location];
 
     return sqlManager.excuteSqlAsync(sql, options).then(checkResult);
 
     function checkResult(result){
-        if (result){
-            return result.insertId;
+        if (result.affectedRows == 1){
+            return true;
         }
-        return 0;
+        return false;
     }
 }
 
