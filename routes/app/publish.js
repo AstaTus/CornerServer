@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
     form.maxFieldsSize = 2 * 1024;
     form.parse(req, function(err, fields, files) {
 
-        if (err != null || files.image == null || fields.location == null){
+        if (err != null || files.image == null || fields.cornerGuid == null){
             var packet = new MessagePacket();
             packet.result = MessagePacket.RESULT_FAILED;
             packet.resultCode = MessagePacket.RESULT_CODE_PARAM_ERROR;
@@ -30,7 +30,7 @@ router.post('/', function(req, res, next) {
             packet.msg.mCode = PublishMsg.CODE_IMAGE_IS_MORE_THAN_5MB;
             res.json(packet);
         }else{
-            publishService.publishArticle(session.userGuid, 1, files.image.path, fields.text)
+            publishService.publishArticle(session.userGuid, fields.cornerGuid, files.image.path, fields.text)
                 .then(checkResult)
                 .error(checkErr);
         }

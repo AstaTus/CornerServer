@@ -50,4 +50,11 @@ CodeConfig.UP_RECORD_NOT_SINGLE = 204;
 /*********************************CORNER********************************************/
 CodeConfig.CORNER_ADD_ERROR = 220;
 CodeConfig.CORNER_DATABASE_INSERT_ERROR = 221;
+
+/*********************************USER_FLLOW********************************************/
+CodeConfig.USER_FLLOW_REPEAT = 250;
+
+
+
 module.exports = CodeConfig
+

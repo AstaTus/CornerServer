@@ -93,6 +93,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
             for (i = 0; i < upers.length; ++i){
                 if (upers[i] == userGuid){
                     isUp = true;
+                    break;
                 }
             }
             records.isUps.push(isUp);
@@ -140,4 +141,101 @@ ArticleService.deleteAriticleByGuid = function(userGuid, articleGuid){
     }
 }
 
+ArticleService.obtainAriticleFromAttentionsAndCorners = function(userGuid, cornerGuids, articleGuid, direction) {
+    var conditon;
+    var count;
+    var records = {
+        articles:new Array(),
+        corners:new Array(),
+        comments:new Array(),
+        uperCounts:new Array(),
+        isUps:new Array(),
+        user:{
+            guid:0,
+            name:'',
+            headPath:'',
+        }
+    }
+    if(direction == ArticleService.REQUEST_DIRECTION_UP){
+        conditon = articleModel.NEW_CONDITION;
+        count = ArticleService.REQUEST_NEWER_PAGE_COUNT;
+    }else{
+        conditon = articleModel.OLD_CONDITION;
+        count = ArticleService.REQUEST_NEXT_PAGE_COUNT;
+    }
+
+    return findArticleUser()
+        .then(checkArticleUser)
+        .then(findUserArticles)
+        .then(findRelativeDatas)
+        .then(resolve);
+
+    function findAttentionUsers(){
+        return
+    }
+    function findArticleUser(){
+        return userModel.queryUserByGuid(articleUserGuid);
+    }
+
+    function checkArticleUser(user){
+        if (user){
+            records.user.guid = user.guid;
+            records.user.name = user.nickname;
+            records.user.headPath = user.head_path;
+
+            return;
+
+        }else{
+            return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+        }
+    }
+
+    function findUserArticles(){
+        return articleModel.
+        queryArticleByUser(articleUserGuid, articleGuid, conditon, count)
+    }
+
+
+
+
+    function findRelativeDatas(articles){
+        return promise.all(promise.map(articles, function(article) {
+            return promise.join(article,
+                cornerModel.queryCornerByGuid(article.corner_guid),
+                commentModel.queryCommentsByArticle(article.guid, 3, commentModel.NO_CONDITION, 0),
+                upModel.queryUserGuidsByArticle(article.guid),
+                handleRelativeData);
+        }));
+
+        function handleRelativeData(article, corner, comments, upers){
+
+            records.articles.push(article);
+            records.corners.push(corner);
+            records.comments.push(comments);
+            records.uperCounts.push(upers.length);
+
+            var isUp = false;
+            for (i = 0; i < upers.length; ++i){
+                if (upers[i] == userGuid){
+                    isUp = true;
+                }
+            }
+            records.isUps.push(isUp);
+        }
+    }
+
+    function resolve(){
+        var isFull = false;
+        if (records.length == count){
+            isFull = true;
+        }
+
+        var data = {
+            records: records,
+            isFull: isFull
+        };
+
+        return data;
+    }
+}
 module.exports = ArticleService;
