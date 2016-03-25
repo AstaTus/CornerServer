@@ -4,7 +4,12 @@
 var cornerModel = require('../model/CornerModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
-var CodeConfig = require('../config/CodeConfig')
+
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
+
+
 var CornerAddCmd = require('../http/CornerAddCmd')
 CornerService = function(){
 }
@@ -23,20 +28,20 @@ CornerService.addCorner = function(userGuid, name, location){
                 .insertCorner(result._id, userGuid, name, location)
                 .then(checkModelResult);
         }else{
-            return promise.reject(new Error(result.info));
+            return promise.reject(new LogicError(ServiceCode.CORNER_AMAP_ADD_FAILED, result.info));
         }
 
     }
 
-    function checkModelResult(result){
+    function checkModelResult(modelCode){
 
-        if (true){
+        if (modelCode == ModelCode.CORNER_INSERT_SUCCESS){
             return {
                 guid: guid,
                 name:name};
         }
 
-        return promise.reject(new Error(CodeConfig.CORNER_DATABASE_INSERT_ERROR));
+        return promise.reject(new LogicError(modelCode));
     }
 }
 

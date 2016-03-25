@@ -5,6 +5,11 @@
 var commentModel = require('../model/CommentModel')
 var userModel = require('../model/UserModel')
 var promise = require('bluebird')
+
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
+
 CommentService = function(){
 }
 
@@ -26,8 +31,6 @@ CommentService.obtainCommentFromArticle = function(articleGuid, commentGuid, dir
     return commentModel
         .queryCommentsByArticle(articleGuid, maxCount, conditon, commentGuid)
         .then(resolve);
-
-
 
     function resolve(comments){
         var isFull = false;
@@ -77,14 +80,13 @@ CommentService.addComment = function(articleGuid, replyGuid, targetGuid, text){
         return userModel.queryUserByGuid(replyGuid).then(checkReplyResult);
     }
 
-    function checkReplyResult(reply){
-        if(reply){
-            record.replyName = reply.nickname;
-            record.headPath = reply.headPath;
-
+    function checkReplyResult(users){
+        if (users.length == 1){
+            record.replyName = users[0].nickname;
+            record.headPath = users[0].head_path;
             return;
         }else{
-            return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+            return promise.reject(new LogicError(CodeConfig.USER_NOT_EXIST));
         }
     }
 
@@ -96,12 +98,12 @@ CommentService.addComment = function(articleGuid, replyGuid, targetGuid, text){
         }
     }
 
-    function checkTargetResult(target){
-        if(target){
+    function checkTargetResult(targets){
+        if (targets.length == 1){
             record.targetName = target.nickName;
-            return;
+            return record;
         }else{
-            return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+            return promise.reject(new LogicError(CodeConfig.USER_NOT_EXIST));
         }
     }
 }
@@ -111,20 +113,24 @@ CommentService.deleteComment = function(userGuid, commentGuid){
         .queryCommentByGuid(commentGuid)
         .then(checkComment);
 
-    function checkComment(comment){
-        if (comment){
+    function checkComment(comments){
+        if (comments.length == 1){
             if (comment.reply_guid == userGuid){
                 return commentModel.deleteComment(commentGuid).then(resolve);
             }else{
-                return false;
+                return promise.reject(new LogicError(ServiceCode.USER_NO_AUTH));
             }
         }else{
-            return false;
+            return promise.reject(new LogicError(ServiceCode.COMMENT_NOT_EXIST));
         }
     }
 
-    function  resolve(result){
-        return result;
+    function  resolve(modelCode){
+        if (modelCode == ModelCode.COMMENT_DELETE_SUCCESS){
+            return;
+        }else {
+            return promise.reject(new LogicError(modelCode));
+        }
     }
 }
 

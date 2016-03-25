@@ -8,6 +8,8 @@ var ArticleMsg = require("../../message/ArticleMsg");
 var ArticleDeleteMsg = require("../../message/ArticleDeleteMsg");
 var CommentBlock = require("../../message/CommentBlock");
 var articleService = require("../../service/ArticleService");
+var LogicError = require("../../service/LogicError");
+
 var moment = require('moment');
 router.get('/Obtain/User', function(req, res, next) {
     var params = req.query;

@@ -5,6 +5,8 @@
 var sqlManager = require('../database/SqlManager')
 var log = require('../util/Log')
 var promise = require('bluebird')
+var ModelCode = require('../config/ModelCode')
+
 var UpModel = function(){}
 
 UpModel.insertUp = function(userGuid, articleGuid){
@@ -13,14 +15,26 @@ UpModel.insertUp = function(userGuid, articleGuid){
 
     return sqlManager.excuteSqlAsync(sql, options);
 
+    function resolve(result){
+        return ModelCode.UP_INSERT_SUCCESS;
+    }
 }
-
 
 UpModel.deleteUp = function(userGuid, articleGuid){
     var sql = 'DELETE FROM up WHERE user_guid = ? AND article_guid = ?';
     var options = [userGuid, articleGuid];
 
     return sqlManager.excuteSqlAsync(sql, options);
+
+    function reslove(result){
+
+        if(result.affectedRows == 1)
+            return ModelCode.UP_DELETE_SUCCESS;
+        else if(result.affectedRows == 0)
+            return ModelCode.UP_NOT_EXIST;
+        else
+            return ModelCode.UP_RECORD_REPEAT;
+    }
 }
 
 

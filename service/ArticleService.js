@@ -7,8 +7,12 @@ var userModel = require('../model/UserModel')
 var cornerModel = require('../model/CornerModel')
 var commentModel = require('../model/CommentModel')
 var upModel = require('../model/upModel')
-var CodeConfig = require("../config/CodeConfig")
+
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
 var promise = require('bluebird')
+
 ArticleService = function(){
 }
 
@@ -22,7 +26,7 @@ ArticleService.REQUEST_NEWER_PAGE_COUNT = 6;
 ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, articleGuid, direction){
     var conditon;
     var count;
-    var records = {
+    var packages = {
         articles:new Array(),
         corners:new Array(),
         comments:new Array(),
@@ -52,16 +56,15 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         return userModel.queryUserByGuid(articleUserGuid);
     }
 
-    function checkArticleUser(user){
-        if (user){
-            records.user.guid = user.guid;
-            records.user.name = user.nickname;
-            records.user.headPath = user.head_path;
+    function checkArticleUser(records){
+        if(records.length == 1){
+            packages.user.guid = records[0].guid;
+            packages.user.name = records[0].nickname;
+            packages.user.headPath = records[0].head_path;
 
             return;
-
-        }else{
-                return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+        }else if(records.length == 0){
+            return promise.reject(new LogicError(ServiceCode.USER_NOT_EXIST));
         }
     }
 
@@ -69,9 +72,6 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         return articleModel.
             queryArticleByUser(articleUserGuid, articleGuid, conditon, count)
     }
-
-
-
 
     function findRelativeDatas(articles){
         return promise.all(promise.map(articles, function(article) {
@@ -84,10 +84,10 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
 
         function handleRelativeData(article, corner, comments, upers){
 
-            records.articles.push(article);
-            records.corners.push(corner);
-            records.comments.push(comments);
-            records.uperCounts.push(upers.length);
+            packages.articles.push(article);
+            packages.corners.push(corner);
+            packages.comments.push(comments);
+            packages.uperCounts.push(upers.length);
 
             var isUp = false;
             for (i = 0; i < upers.length; ++i){
@@ -96,18 +96,18 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
                     break;
                 }
             }
-            records.isUps.push(isUp);
+            packages.isUps.push(isUp);
         }
     }
 
     function resolve(){
         var isFull = false;
-        if (records.length == count){
+        if (packages.length == count){
             isFull = true;
         }
 
         var data = {
-            records: records,
+            records: packages,
             isFull: isFull
         };
 
@@ -120,122 +120,26 @@ ArticleService.deleteAriticleByGuid = function(userGuid, articleGuid){
     return articleModel
         .queryArticleByGuid(articleGuid).then(checkArticle);
 
-    function checkArticle(article){
+    function checkArticle(articles){
 
-        if (article){
+        if (articles.length == 1){
             if (article.user_guid == userGuid){
-                return articleModel.deleteArticle(articleGuid);
+                return articleModel.deleteArticle(articleGuid).then(resolve);
             }else{
-                return CodeConfig.ARTICLE_NO_POWER;
+                return promise.reject(new LogicError(ServiceCode.USER_NO_AUTH));
             }
         }else{
-            return CodeConfig.ARTICLE_NOT_EXIST;
+            return promise.reject(new LogicError(ModelCode.ARTICLE_NOT_EXIST));
         }
     }
 
-    function resolve(result){
-        if (result){
-            return CodeConfig.ARTICLE_SUCCESS_DELETE;
-        }
-        return CodeConfig.DATABASE_ERROR;
-    }
-}
-
-ArticleService.obtainAriticleFromAttentionsAndCorners = function(userGuid, cornerGuids, articleGuid, direction) {
-    var conditon;
-    var count;
-    var records = {
-        articles:new Array(),
-        corners:new Array(),
-        comments:new Array(),
-        uperCounts:new Array(),
-        isUps:new Array(),
-        user:{
-            guid:0,
-            name:'',
-            headPath:'',
-        }
-    }
-    if(direction == ArticleService.REQUEST_DIRECTION_UP){
-        conditon = articleModel.NEW_CONDITION;
-        count = ArticleService.REQUEST_NEWER_PAGE_COUNT;
-    }else{
-        conditon = articleModel.OLD_CONDITION;
-        count = ArticleService.REQUEST_NEXT_PAGE_COUNT;
-    }
-
-    return findArticleUser()
-        .then(checkArticleUser)
-        .then(findUserArticles)
-        .then(findRelativeDatas)
-        .then(resolve);
-
-    function findAttentionUsers(){
-        return
-    }
-    function findArticleUser(){
-        return userModel.queryUserByGuid(articleUserGuid);
-    }
-
-    function checkArticleUser(user){
-        if (user){
-            records.user.guid = user.guid;
-            records.user.name = user.nickname;
-            records.user.headPath = user.head_path;
-
+    function resolve(code){
+        if (code == ModelCode.ARTICLE_DELETE_SUCCESS){
             return;
-
         }else{
-            return promise.reject(new Error(CodeConfig.USER_NOT_EXIST));
+            return promise.reject(new LogicError(code));
         }
-    }
-
-    function findUserArticles(){
-        return articleModel.
-        queryArticleByUser(articleUserGuid, articleGuid, conditon, count)
-    }
-
-
-
-
-    function findRelativeDatas(articles){
-        return promise.all(promise.map(articles, function(article) {
-            return promise.join(article,
-                cornerModel.queryCornerByGuid(article.corner_guid),
-                commentModel.queryCommentsByArticle(article.guid, 3, commentModel.NO_CONDITION, 0),
-                upModel.queryUserGuidsByArticle(article.guid),
-                handleRelativeData);
-        }));
-
-        function handleRelativeData(article, corner, comments, upers){
-
-            records.articles.push(article);
-            records.corners.push(corner);
-            records.comments.push(comments);
-            records.uperCounts.push(upers.length);
-
-            var isUp = false;
-            for (i = 0; i < upers.length; ++i){
-                if (upers[i] == userGuid){
-                    isUp = true;
-                }
-            }
-            records.isUps.push(isUp);
-        }
-    }
-
-    function resolve(){
-        var isFull = false;
-        if (records.length == count){
-            isFull = true;
-        }
-
-        var data = {
-            records: records,
-            isFull: isFull
-        };
-
-        return data;
     }
 }
+
 module.exports = ArticleService;

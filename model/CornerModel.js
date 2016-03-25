@@ -4,21 +4,18 @@
 
 var sqlManager = require('../database/SqlManager')
 var log = require('../util/Log')
-var CornerEntity = require("../entity/CornerEntity")
 var promise = require('bluebird')
+var ModelCode = require('../config/ModelCode')
 var CornerModel = function(){}
 
 CornerModel.insertCorner = function(guid, userGuid, name, location){
     var sql = 'INSERT INTO corner (guid, finder_guid, toper_guid, name, location) VALUES (?, ?, ?, ?, ?);';
     var options = [guid, userGuid, userGuid, name, location];
 
-    return sqlManager.excuteSqlAsync(sql, options).then(checkResult);
+    return sqlManager.excuteSqlAsync(sql, options).then(resolve);
 
-    function checkResult(result){
-        if (result.affectedRows == 1){
-            return true;
-        }
-        return false;
+    function resolve(result){
+        return result.insertedId;
     }
 }
 
@@ -26,24 +23,7 @@ CornerModel.queryCornerByGuid = function(guid){
     var sql = 'SELECT * FROM Corner WHERE guid = ?;';
     var options = [guid];
 
-    return sqlManager.excuteSqlAsync(sql, options).then(reslove);
-
-    function reslove(records) {
-        console.log('rows', records);
-
-        if (records.length == 0) {
-            return null;
-        } else if (records.length > 1) {
-            //记录日志
-            log.getCurrent().fatal("UserModel.queryUserByNickname: user record is rpeat");
-            return promise;
-        } else {
-            var user = new CornerEntity();
-            user.fromDatabase(records[0]);
-
-            return user;
-        }
-    }
+    return sqlManager.excuteSqlAsync(sql, options);
 }
 
 module.exports =  CornerModel;

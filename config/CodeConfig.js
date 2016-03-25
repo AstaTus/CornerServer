@@ -53,8 +53,25 @@ CodeConfig.CORNER_DATABASE_INSERT_ERROR = 221;
 
 /*********************************USER_FLLOW********************************************/
 CodeConfig.USER_FLLOW_REPEAT = 250;
+CodeConfig.USER_FLLOW_MAKE = 251;
+CodeConfig.USER_FLLOW_CANCEL = 252;
+
+CodeConfig.USER_FLLOW_CANCEL_NOT_SINGLE = 253;
+CodeConfig.USER_FLLOW_MAKE_NOT_SINGLE = 254;
+CodeConfig.USER_FLLOW_RECORD_NOT_SINGLE = 255;
 
 
+/*********************************USER_FLLOW********************************************/
+CodeConfig.CORNER_FLLOW_INSERT_SUCCESS = 300;
+CodeConfig.CORNER_FLLOW_INSERT_ERROR = 301;
+CodeConfig.CORNER_FLLOW_DELETE_SUCCESS = 302;
+CodeConfig.CORNER_FLLOW_DELETE_ERROR = 303;
+CodeConfig.CORNER_FLLOW_REPEAT_ERROR = 304;
+CodeConfig.CORNER_FLLOW_UPDATE_SUCCESS = 305;
+CodeConfig.CORNER_FLLOW_UPDATE_ERROR = 306;
 
+CodeConfig.CORNER_FLLOW_FLAG_BEEN_STATE = 310;
+CodeConfig.CORNER_FLLOW_FLAG_WANT_STATE = 311;
+CodeConfig.CORNER_FLLOW_FLAG_STATE_ERROR = 312;
 module.exports = CodeConfig
 
