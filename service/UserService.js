@@ -5,7 +5,10 @@
 var userModel = require('../model/UserModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
-var CodeConfig = require("../config/CodeConfig")
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
+
 UserService = function(){
 }
 
@@ -15,37 +18,36 @@ UserService.register = function(email, password, nickname, birth, sex){
     var reg = /^[\w.]{6,20}$/;
     var r = reg.test(password);
     if(r == false){
-        return promise.reject(CodeConfig.REGISTER_PASSWORD_ERROR);
+        return promise.reject(new LogicError(ServiceCode.REGISTER_PASSWORD_ERROR));
     }
 
     //检测邮箱重复
-    return promise.resolve(email)
-        .then(getUserByEmail)
+    return getUserByEmail()
         .then(checkEmailRepeat)
         .then(getUserByNickname)
         .then(checkNickNameRepeat)
         .then(processRegister);
 
-    function getUserByEmail(email){
+    function getUserByEmail(){
         return userModel.queryUserByEmail(email);
     }
 
-    function checkEmailRepeat(user){
-        if(user == null)
-            return promise.resolve(nickname);
+    function checkEmailRepeat(users){
+        if(users.length == 0)
+            return ;
         else
-            return promise.reject(new Error(CodeConfig.REGISTER_EMAIL_REPEAT));
+            return promise.reject(new LogicError(ServiceCode.REGISTER_EMAIL_REPEAT));
     }
 
-    function getUserByNickname(nickname){
+    function getUserByNickname(){
         return userModel.queryUserByNickname(nickname);
     }
 
-    function checkNickNameRepeat(user){
-        if(user == null)
-            return promise.resolve();
+    function checkNickNameRepeat(users){
+        if(users.length == 0)
+            return ;
         else
-            return promise.reject(CodeConfig.REGISTER_NICKNAME_REPEAT);
+            return promise.reject(new LogicError(ServiceCode.REGISTER_NICKNAME_REPEAT));
     }
 
     function processRegister(){
@@ -53,39 +55,26 @@ UserService.register = function(email, password, nickname, birth, sex){
     }
 
     function checkResult(insertId){
-
-        if (insertId != 0){
-            return true;
-        }
-
-        return false;
+        return;
 
     }
-
-    /*function insertResult(result){
-        if (result == null)
-            return codeConfig.REGISTER_SUCCESS;
-        else
-            return codeConfig.REGISTER_SQL_ERROR;
-
-    }*/
 }
 
 UserService.login = function(email, password){
 
-    return promise.resolve(email).then(getUser).then(checkUser);
+    return getUser().then(checkUser);
 
-    function getUser(email){
+    function getUser(){
         return userModel.queryUserByEmail(email);
     }
 
-    function checkUser(user){
-        if(user == null)
-            return [CodeConfig.LOGIN_EMAIL_NOT_EXIST, 0];
-        else if (user.password == password)
-            return [CodeConfig.LOGIN_SUCCESS, user.guid];
+    function checkUser(users){
+        if(users.length == 0)
+            return promise.reject(new LogicError(ModelCode.USER_NOT_EXIST));
+        else if (users.length == 1 && users[0].password == password)
+            return users[0].guid;
         else
-            return [CodeConfig.LOGIN_EMAIL_OR_PASSWORD_ERROR, 0];
+            return promise.reject(new LogicError(ServiceCode.LOGIN_EMAIL_OR_PASSWORD_ERROR));
     }
 }
 
@@ -93,9 +82,9 @@ UserService.logout = function(session){
     session.destroyAsync(destroyCallback);
     function destroyCallback(err){
         if (err == null)
-            return true;
+            return;
         else
-            return false;
+            return promise.reject(new LogicError(ServiceCode.LOGOUT_FAILED, err)) ;
     }
 }
 

@@ -30,7 +30,6 @@ CornerService.addCorner = function(userGuid, name, location){
         }else{
             return promise.reject(new LogicError(ServiceCode.CORNER_AMAP_ADD_FAILED, result.info));
         }
-
     }
 
     function checkModelResult(modelCode){
@@ -46,3 +45,4 @@ CornerService.addCorner = function(userGuid, name, location){
 }
 
 module.exports = CornerService;
+  

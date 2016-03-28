@@ -14,68 +14,37 @@ ServiceCode.USER_NO_AUTH = 10001;
 ServiceCode.CORNER_AMAP_ADD_FAILED = 10100;
 
 /*********************************ARTICLE********************************************/
-
+ServiceCode.ARTICLE_OSS_ADD_FAILED = 10200;
 
 /*********************************COMMENT********************************************/
 
-
-
-
-
-
 /*********************************REGISTER********************************************/
-ServiceCode.REGISTER_SUCCESS = 100;
-ServiceCode.REGISTER_EMAIL_REPEAT = 101;
-ServiceCode.REGISTER_NICKNAME_REPEAT = 102;
-ServiceCode.REGISTER_PASSWORD_ERROR = 103;
-ServiceCode.REGISTER_SQL_ERROR = 104;
+ServiceCode.REGISTER_EMAIL_REPEAT = 10301;
+ServiceCode.REGISTER_NICKNAME_REPEAT = 10302;
+ServiceCode.REGISTER_PASSWORD_ERROR = 10303;
+
+ServiceCode.REGISTER_SUCCESS = 10300;
+ServiceCode.REGISTER_SQL_ERROR = 10304;
 
 /*********************************LOGIN********************************************/
-ServiceCode.LOGIN_SUCCESS = 150;
-ServiceCode.LOGIN_EMAIL_OR_PASSWORD_ERROR = 151;
-ServiceCode.LOGIN_EMAIL_NOT_EXIST = 152;
+ServiceCode.LOGIN_SUCCESS = 10400;
+ServiceCode.LOGIN_EMAIL_OR_PASSWORD_ERROR = 10401;
 
-/*********************************PUBLISH********************************************/
-ServiceCode.PUBLISH_OSS_ERROR = 160;
-
-
-
-
-
-
+/*********************************LOGOUT********************************************/
+ServiceCode.LOGOUT_SUCCESS = 10500;
+ServiceCode.LOGOUT_FAILED = 10501;
 
 
 /*********************************UP********************************************/
-ServiceCode.UP_MAKE = 200;
-ServiceCode.UP_CANCEL = 201;
-ServiceCode.UP_CANCEL_NOT_SINGLE = 202;
-ServiceCode.UP_MAKE_NOT_SINGLE = 203;
-ServiceCode.UP_RECORD_NOT_SINGLE = 204;
+
 
 /*********************************CORNER********************************************/
-ServiceCode.CORNER_ADD_ERROR = 220;
-ServiceCode.CORNER_DATABASE_INSERT_ERROR = 221;
-
-/*********************************USER_FLLOW********************************************/
-ServiceCode.USER_FLLOW_REPEAT = 250;
-ServiceCode.USER_FLLOW_MAKE = 251;
-ServiceCode.USER_FLLOW_CANCEL = 252;
-
-ServiceCode.USER_FLLOW_CANCEL_NOT_SINGLE = 253;
-ServiceCode.USER_FLLOW_MAKE_NOT_SINGLE = 254;
-ServiceCode.USER_FLLOW_RECORD_NOT_SINGLE = 255;
 
 
 /*********************************USER_FLLOW********************************************/
-ServiceCode.CORNER_FLLOW_INSERT_SUCCESS = 300;
-ServiceCode.CORNER_FLLOW_INSERT_ERROR = 301;
-ServiceCode.CORNER_FLLOW_DELETE_SUCCESS = 302;
-ServiceCode.CORNER_FLLOW_DELETE_ERROR = 303;
-ServiceCode.CORNER_FLLOW_REPEAT_ERROR = 304;
-ServiceCode.CORNER_FLLOW_UPDATE_SUCCESS = 305;
-ServiceCode.CORNER_FLLOW_UPDATE_ERROR = 306;
 
-ServiceCode.CORNER_FLLOW_FLAG_BEEN_STATE = 310;
-ServiceCode.CORNER_FLLOW_FLAG_WANT_STATE = 311;
-ServiceCode.CORNER_FLLOW_FLAG_STATE_ERROR = 312;
+
+
+/*********************************CORNER_FLLOW********************************************/
+
 module.exports = ServiceCode

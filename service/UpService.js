@@ -3,7 +3,10 @@
  */
 
 var upModel = require('../model/UpModel')
-var CodeConfig = require("../config/CodeConfig")
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
+var promise = require('bluebird');
 var log = require('../util/Log')
 UpService = function(){
 }
@@ -13,13 +16,8 @@ UpService.changeUpState = function(userGuid, articleGuid){
     var isUpdateSucess = false;
     var imagePath;
     //检测cornerGuid 是否存在
-    return getUpRecord()
+    return upModel.queryUp(userGuid, articleGuid)
         .then(processChangeUpState);
-
-
-    function getUpRecord(){
-        return upModel.queryUp(userGuid, articleGuid);
-    }
 
     function processChangeUpState(record){
         if (record.length == 0) {
@@ -28,26 +26,26 @@ UpService.changeUpState = function(userGuid, articleGuid){
         else if(record.length == 1){
             return upModel.deleteUp(userGuid, articleGuid).then(checkCancelUpState);
         }else{
-            log.getCurrent().fatal("UpService.processChangeUpState: record is not single");
-            return promise.reject(new Error(CodeConfig.UP_RECORD_NOT_SINGLE));
+            //log.getCurrent().fatal("UpService.processChangeUpState: record is not single");
+            return promise.reject(new LogicError(ModelCode.UP_RECORD_REPEAT));
         }
     }
 
     function checkCancelUpState(result){
-        if (result.affectedRows == 1){
-            return CodeConfig.UP_CANCEL;
+        if (code == ModelCode.UP_DELETE_SUCCESS){
+            return ;
         }else{
-            log.getCurrent().fatal("UpService.checkCancelUpState: cancel is not single");
-            return promise.reject(new Error(CodeConfig.UP_CANCEL_NOT_SINGLE));
+            //log.getCurrent().fatal("UpService.checkMakeUpState: nake is not single");
+            return promise.reject(new LogicError(code));
         }
     }
 
-    function checkMakeUpState(result){
-        if (result.affectedRows == 1){
-            return CodeConfig.UP_MAKE;
+    function checkMakeUpState(code){
+        if (code == ModelCode.UP_INSERT_SUCCESS){
+            return ;
         }else{
-            log.getCurrent().fatal("UpService.checkMakeUpState: nake is not single");
-            return promise.reject(new Error(CodeConfig.UP_MAKE_NOT_SINGLE));
+            //log.getCurrent().fatal("UpService.checkMakeUpState: nake is not single");
+            return promise.reject(new LogicError(code));
         }
     }
 }

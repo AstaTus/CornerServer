@@ -5,7 +5,11 @@ var articleModel = require('../model/ArticleModel')
 var cornerModel = require('../model/CornerModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
-var CodeConfig = require('../config/CodeConfig')
+
+var ModelCode = require("../config/ModelCode")
+var ServiceCode = require("../config/ServiceCode")
+var LogicError = require("../../service/LogicError");
+
 var imageOss = require('../util/ImageOss')
 var moment = require('moment');
 var oss = require('ali-oss');
@@ -21,27 +25,22 @@ PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
     var isUpdateSucess = false;
     var imagePath;
     //检测cornerGuid 是否存在
-    return promise.resolve(cornerGuid)
-        .then(getCorner)
+    return cornerModel.queryCornerByGuid(cornerGuid)
         .then(checkCornerValid)
         .then(uploadImageToOSS)
         .then(processPublish);
 
-    function getCorner(cornerGuid){
-        return cornerModel.queryCornerByGuid(cornerGuid);
-    }
 
-    function checkCornerValid(corner){
-        if (corner != null) {
-            return promise.resolve();
+    function checkCornerValid(records){
+        if (records.length == 1) {
+            return ;
         }
-        else{
-            return promise.reject(new Error(CodeConfig.CORNER_NOT_EXIST));
+        else if (records.length == 0){
+            return promise.reject(new LogicError(ModelCode.CORNER_NOT_EXIST));
+        }else{
+            return promise.reject(new LogicError(ModelCode.DATABASE_KEY_REPEAT));
         }
     }
-
-
-
 
     function uploadImageToOSS(){
         return co(function *(){
@@ -59,10 +58,16 @@ PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
 
     function processPublish(){
         if (isUpdateSucess == false){
-            return promise.reject(new Error(CodeConfig.PUBLISH_OSS_ERROR));
+            return promise.reject(new LogicError(ServiceCode.ARTICLE_OSS_ADD_FAILED));
         }else{
-            return articleModel.insertArticle(userGuid, cornerGuid, imagePath, text);
+            return articleModel
+                .insertArticle(userGuid, cornerGuid, imagePath, text)
+                .then(processResolve);
         }
+    }
+
+    function processResolve(result){
+        return ModelCode.ARTICLE_INSERT_SUCCESS;
     }
 }
 

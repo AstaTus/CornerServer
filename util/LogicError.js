@@ -9,7 +9,7 @@ var util = require('util');
 /**
  * Error Class ValueOutOfRangeError
  * */
-function LogicError(code) {
+function LogicError(code, info) {
 
     /*INHERITANCE*/
 

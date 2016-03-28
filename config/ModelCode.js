@@ -12,6 +12,7 @@ ModelCode.DATABASE_KEY_REPEAT = 1;
 /*********************************ARTICLE********************************************/
 ModelCode.ARTICLE_NOT_EXIST = 100;
 ModelCode.ARTICLE_DELETE_SUCCESS = 101;
+ModelCode.ARTICLE_INSERT_SUCCESS = 102;
 
 /*********************************COMMENT********************************************/
 ModelCode.COMMENT_NOT_EXIST = 200;
@@ -26,6 +27,7 @@ ModelCode.CORNER_FLLOW_UPDATE_STATE_SUCCESS = 304;
 
 /*********************************CORNER********************************************/
 ModelCode.CORNER_INSERT_SUCCESS = 300;
+ModelCode.CORNER_NOT_EXIST = 301;
 
 /*********************************UP********************************************/
 ModelCode.UP_INSERT_SUCCESS = 400;
@@ -42,6 +44,7 @@ ModelCode.USER_FLLOW_DELETE_SUCCESS = 503;
 
 /*********************************USER********************************************/
 //空
-
+ModelCode.USER_INSERT_SUCCESS = 600;
+ModelCode.USER_NOT_EXIST = 601;
 module.exports = ModelCode
 
