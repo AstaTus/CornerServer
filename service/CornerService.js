@@ -32,15 +32,10 @@ CornerService.addCorner = function(userGuid, name, location){
         }
     }
 
-    function checkModelResult(modelCode){
-
-        if (modelCode == ModelCode.CORNER_INSERT_SUCCESS){
-            return {
-                guid: guid,
-                name:name};
-        }
-
-        return promise.reject(new LogicError(modelCode));
+    function checkModelResult(insertId){
+        return {
+            guid: insertId,
+            name:name};
     }
 }
 
