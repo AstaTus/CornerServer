@@ -10,7 +10,6 @@ var CommentRemoveMsg = require("../../message/CommentRemoveMsg");
 var CommentAddMsg = require("../../message/CommentAddMsg");
 var CommentBlock = require("../../message/CommentBlock");
 var MessagePacket = require("../../message/MessagePacket");
-var CodeConfig = require("../../config/CodeConfig")
 var moment = require('moment')
 router.get('/Obtain', function(req, res, next) {
     var params = req.query;
@@ -110,12 +109,12 @@ router.post('/Delete', function(req, res, next) {
         .then(checkErr);
 
 
-    function checkResult(result){
+    function checkResult(){
         var packet = new MessagePacket();
         var msg = new CommentRemoveMsg();
         packet.msg = msg;
         packet.result = true;
-        packet.msg.mResult = result;
+        packet.msg.mResult = true;
 
         res.json(packet);
     }

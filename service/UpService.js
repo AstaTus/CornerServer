@@ -33,7 +33,7 @@ UpService.changeUpState = function(userGuid, articleGuid){
 
     function checkCancelUpState(result){
         if (code == ModelCode.UP_DELETE_SUCCESS){
-            return ;
+            return ServiceCode.UP_CANCEL_STATE;
         }else{
             //log.getCurrent().fatal("UpService.checkMakeUpState: nake is not single");
             return promise.reject(new LogicError(code));
@@ -42,7 +42,7 @@ UpService.changeUpState = function(userGuid, articleGuid){
 
     function checkMakeUpState(code){
         if (code == ModelCode.UP_INSERT_SUCCESS){
-            return ;
+            return ServiceCode.UP_MAKE_STATE;
         }else{
             //log.getCurrent().fatal("UpService.checkMakeUpState: nake is not single");
             return promise.reject(new LogicError(code));

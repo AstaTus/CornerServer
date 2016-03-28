@@ -55,7 +55,7 @@ UserService.register = function(email, password, nickname, birth, sex){
     }
 
     function checkResult(insertId){
-        return;
+        return insertId;
 
     }
 }

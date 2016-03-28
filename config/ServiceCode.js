@@ -34,9 +34,9 @@ ServiceCode.LOGIN_EMAIL_OR_PASSWORD_ERROR = 10401;
 ServiceCode.LOGOUT_SUCCESS = 10500;
 ServiceCode.LOGOUT_FAILED = 10501;
 
-
 /*********************************UP********************************************/
-
+ServiceCode.UP_CANCEL_STATE = 10600;
+ServiceCode.UP_MAKE_STATE = 10601;
 
 /*********************************CORNER********************************************/
 

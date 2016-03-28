@@ -86,7 +86,7 @@ CommentService.addComment = function(articleGuid, replyGuid, targetGuid, text){
             record.headPath = users[0].head_path;
             return;
         }else{
-            return promise.reject(new LogicError(CodeConfig.USER_NOT_EXIST));
+            return promise.reject(new LogicError(ModelCode.USER_NOT_EXIST));
         }
     }
 

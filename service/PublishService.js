@@ -66,8 +66,8 @@ PublishService.publishArticle = function(userGuid, cornerGuid, imageUrl, text){
         }
     }
 
-    function processResolve(result){
-        return ModelCode.ARTICLE_INSERT_SUCCESS;
+    function processResolve(insertId){
+        return ;
     }
 }
 

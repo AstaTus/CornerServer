@@ -7,7 +7,8 @@ var router = express.Router();
 var upService = require('../../service/UpService');
 var MessagePacket = require("../../message/MessagePacket");
 var UpChangeStateMsg = require('../../message/UpChangeStateMsg');
-var CodeConfig = require('../../config/CodeConfig');
+var ServiceCode = require("../config/ServiceCode")
+
 router.post('/ChangeState', function(req, res, next) {
     var params = req.body;
     var session = req.session;
@@ -18,7 +19,7 @@ router.post('/ChangeState', function(req, res, next) {
         packet.msg = new UpChangeStateMsg();
         packet.result = true;
         packet.msg.mArticleGuid = params.articleGuid;
-        if (state == CodeConfig.UP_MAKE){
+        if (state == ServiceCode.UP_MAKE_STATE){
             packet.msg.mIsUp = UpChangeStateMsg.CODE_UP_STATE;
         }else{
             packet.msg.mIsUp = UpChangeStateMsg.CODE_UNUP_STATE;

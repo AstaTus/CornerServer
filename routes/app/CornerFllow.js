@@ -7,7 +7,6 @@ var cornerFllowService = require('../../service/cornerFllowService');
 var MessagePacket = require("../../message/MessagePacket");
 var CornerFllowStateMsg = require('../../message/CornerFllowStateMsg');
 var CornerFllowUnFllowMsg = require('../../message/CornerFllowUnFllowMsg');
-var CodeConfig = require('../../config/CodeConfig');
 router.post('/BeenTo', function(req, res, next) {
     var params = req.body;
     var session = req.session;
@@ -16,16 +15,12 @@ router.post('/BeenTo', function(req, res, next) {
         .then(checkResult)
         .error(checkErr);
 
-    function checkResult(state){
+    function checkResult(){
         var packet = new MessagePacket();
         packet.msg = new CornerFllowStateMsg();
         packet.result = true;
         packet.msg.mCornerGuid = params.cornerGuid;
-        if (state == CodeConfig.CORNER_FLLOW_FLAG_BEEN_STATE){
-            packet.msg.mState = CornerFllowStateMsg.CODE_STATE_BEEN_TO;
-        }else{
-            packet.msg.mState = CornerFllowStateMsg.CODE_UNFUP_STATE;
-        }
+        packet.msg.mState = CornerFllowStateMsg.CODE_STATE_BEEN_TO;
 
         res.json(packet);
     }
@@ -41,18 +36,18 @@ router.post('/BeenTo', function(req, res, next) {
 router.post('/WantTo', function(req, res, next) {
     var params = req.body;
     var session = req.session;
-    upService.changeUpState(session.userGuid, params.articleGuid).then(checkResult).error(checkErr);
+    cornerFllowService
+        .WantTo(session.userGuid, params.cornerGuid)
+        .then(checkResult)
+        .error(checkErr);
 
-    function checkResult(state){
+    function checkResult(){
+
         var packet = new MessagePacket();
-        packet.msg = new UpChangeStateMsg();
+        packet.msg = new CornerFllowStateMsg();
         packet.result = true;
-        packet.msg.mArticleGuid = params.articleGuid;
-        if (state == CodeConfig.UP_MAKE){
-            packet.msg.mIsUp = UpChangeStateMsg.CODE_UP_STATE;
-        }else{
-            packet.msg.mIsUp = UpChangeStateMsg.CODE_UNUP_STATE;
-        }
+        packet.msg.mCornerGuid = params.cornerGuid;
+        packet.msg.mState = CornerFllowStateMsg.CODE_STATE_WANT_TO;
 
         res.json(packet);
     }
@@ -68,18 +63,17 @@ router.post('/WantTo', function(req, res, next) {
 router.post('/UnFllow', function(req, res, next) {
     var params = req.body;
     var session = req.session;
-    upService.changeUpState(session.userGuid, params.articleGuid).then(checkResult).error(checkErr);
+    cornerFllowService
+        .UnFllow(session.userGuid, params.cornerGuid)
+        .then(checkResult)
+        .error(checkErr);
 
-    function checkResult(state){
+    function checkResult(){
         var packet = new MessagePacket();
-        packet.msg = new UpChangeStateMsg();
+        packet.msg = new CornerFllowUnFllowMsg();
         packet.result = true;
-        packet.msg.mArticleGuid = params.articleGuid;
-        if (state == CodeConfig.UP_MAKE){
-            packet.msg.mIsUp = UpChangeStateMsg.CODE_UP_STATE;
-        }else{
-            packet.msg.mIsUp = UpChangeStateMsg.CODE_UNUP_STATE;
-        }
+        packet.msg.mCornerGuid = params.cornerGuid;
+        packet.msg.mResult = true;
 
         res.json(packet);
     }
