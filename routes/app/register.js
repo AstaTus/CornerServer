@@ -7,28 +7,21 @@ var router = express.Router();
 var RegisterMsg = require("../../message/RegisterMsg");
 var MessagePacket = require("../../message/MessagePacket");
 var userService = require("../../service/UserService")
-var CodeConfig = require("../../config/CodeConfig")
 var Log = require('../../util/Log')
+
 router.post('/', function(req, res, next) {
     var params = req.body;
     var session = req.session;
     userService.register(params.email, params.password, params.nickname, params.birthday, params.sex)
         .then(checkResult)
         .error(checkErr)
-        .catch(checkErr);
 
     function checkResult(insertGuid){
         var packet = new MessagePacket();
         packet.msg = new RegisterMsg();
         packet.result = true;
-        if (insertGuid == 0){
-            packet.result = false;
-            packet.resultCode = MessagePacket.RESULT_CODE_DATABASE_ERROR;
-            //log
-        }else{
-            packet.msg.mResult = true;
-            session.userGuid = insertGuid;
-        }
+        packet.msg.mResult = true;
+        session.userGuid = insertGuid;
 
         res.json(packet);
     }
@@ -36,8 +29,8 @@ router.post('/', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.msg = new RegisterMsg();
-        packet.result = true;
-        if(e.message == CodeConfig.REGISTER_EMAIL_REPEAT){
+        packet.result = false;
+        /*if(e.message == CodeConfig.REGISTER_EMAIL_REPEAT){
             msg.code = RegisterMsg.CODE_EMAIL_REAPT;
         }
         else if(e.message == CodeConfig.REGISTER_NICKNAME_REPEAT){
@@ -50,7 +43,7 @@ router.post('/', function(req, res, next) {
             packet.result = false;
             packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
             //log error
-        }
+        }*/
 
         res.json(packet);
     }

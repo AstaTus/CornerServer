@@ -6,27 +6,25 @@ var router = express.Router();
 var userService = require("../../service/UserService")
 var LogoutMsg = require("../../message/LogoutMsg");
 var MessagePacket = require("../../message/MessagePacket");
-var CodeConfig = require("../../config/CodeConfig")
 
 router.post('/', function(req, res, next) {
     var session = req.session;
     userService.logout(session).then(checkResult).error(checkErr);
 
-    function checkResult(success){
+    function checkResult(){
         var packet = new MessagePacket();
         packet.msg = new LogoutMsg();
-        packet.result = MessagePacket.RESULT_FAILED;
-        packet.msg.code = LogoutMsg.SUCCESS;
+        packet.result = true;
+        packet.msg.mResult = true;
         res.json(packet);
     }
 
     function checkErr(e){
         var packet = new MessagePacket();
-        packet.result = MessagePacket.RESULT_FAILED;
+        packet.result = false;
         packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
         res.json(packet);
     }
-
 });
 
 module.exports = router;

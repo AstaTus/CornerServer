@@ -7,7 +7,7 @@ var MessagePacket = require("../../message/MessagePacket");
 var PublishMsg = require("../../message/PublishMsg");
 var formidable = require('formidable');
 var publishService = require("../../service/PublishService");
-var Promise = require('bluebird');
+var promise = require('bluebird');
 
 
 router.post('/', function(req, res, next) {
@@ -19,7 +19,7 @@ router.post('/', function(req, res, next) {
 
         if (err != null || files.image == null || fields.cornerGuid == null){
             var packet = new MessagePacket();
-            packet.result = MessagePacket.RESULT_FAILED;
+            packet.result = false;
             packet.resultCode = MessagePacket.RESULT_CODE_PARAM_ERROR;
             res.json(packet);
         }else if(files.image.size > 5 * 1024 * 1024) {
@@ -36,25 +36,12 @@ router.post('/', function(req, res, next) {
         }
     });
 
-   /* function createDir(exists){
-        if (!exists){
-            return fs.mkdirAsync(path);
-        }else{
-            return promise.resolve();
-        }
-    }*/
 
-    function checkResult(insertGuid){
+    function checkResult(){
         var packet = new MessagePacket();
         packet.msg = new PublishMsg();
         packet.result = true;
-        if (insertGuid == 0){
-            packet.result = false;
-            packet.resultCode = MessagePacket.RESULT_CODE_DATABASE_ERROR;
-            //log
-        }else{
-            packet.msg.mResult = true;
-        }
+        packet.msg.mResult = true;
 
         res.json(packet);
     }
