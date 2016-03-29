@@ -10,7 +10,7 @@ var upModel = require('../model/upModel')
 
 var ModelCode = require("../config/ModelCode")
 var ServiceCode = require("../config/ServiceCode")
-var LogicError = require("../../service/LogicError");
+var LogicError = require("../util/LogicError");
 var promise = require('bluebird')
 
 ArticleService = function(){

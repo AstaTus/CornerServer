@@ -7,7 +7,7 @@ var router = express.Router();
 var upService = require('../../service/UpService');
 var MessagePacket = require("../../message/MessagePacket");
 var UpChangeStateMsg = require('../../message/UpChangeStateMsg');
-var ServiceCode = require("../config/ServiceCode")
+var ServiceCode = require("../../config/ServiceCode")
 
 router.post('/ChangeState', function(req, res, next) {
     var params = req.body;

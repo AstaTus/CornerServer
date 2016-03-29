@@ -8,7 +8,7 @@ var log = require('../util/Log')
 
 var ModelCode = require("../config/ModelCode")
 var ServiceCode = require("../config/ServiceCode")
-var LogicError = require("../../service/LogicError");
+var LogicError = require("../util/LogicError");
 
 var imageOss = require('../util/ImageOss')
 var moment = require('moment');

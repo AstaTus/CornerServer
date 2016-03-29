@@ -5,7 +5,7 @@
 var upModel = require('../model/UpModel')
 var ModelCode = require("../config/ModelCode")
 var ServiceCode = require("../config/ServiceCode")
-var LogicError = require("../../service/LogicError");
+var LogicError = require("../util/LogicError");
 var promise = require('bluebird');
 var log = require('../util/Log')
 UpService = function(){

@@ -8,7 +8,7 @@ var ArticleMsg = require("../../message/ArticleMsg");
 var ArticleDeleteMsg = require("../../message/ArticleDeleteMsg");
 var CommentBlock = require("../../message/CommentBlock");
 var articleService = require("../../service/ArticleService");
-var LogicError = require("../../service/LogicError");
+var LogicError = require("../../util/LogicError");
 
 var moment = require('moment');
 router.get('/Obtain/User', function(req, res, next) {
@@ -79,8 +79,15 @@ router.get('/Obtain/User', function(req, res, next) {
 
     function checkErr(e){
         var packet = new MessagePacket();
-        packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.result = true;
+
+        }else{
+            packet.result = false;
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+
         res.json(packet);
     }
 });
