@@ -7,6 +7,9 @@ var cornerService = require("../../service/CornerService")
 var CornerAddMsg = require("../../message/CornerAddMsg");
 var MessagePacket = require("../../message/MessagePacket");
 
+var ModelCode = require("../../config/ModelCode");
+var LogicError = require("../../util/LogicError");
+var log = require("../../util/Log");
 
 router.post('/Add', function(req, res, next) {
 
@@ -32,7 +35,14 @@ router.post('/Add', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("Corner/Add:" + packet.resultCode);
         res.json(packet);
     }
 })

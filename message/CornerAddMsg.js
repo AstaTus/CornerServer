@@ -1,5 +1,4 @@
 function CornerAddMsg(){
-    this.mResult;
     this.mCorner;
 }
 

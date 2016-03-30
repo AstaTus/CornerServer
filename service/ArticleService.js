@@ -64,7 +64,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
 
             return;
         }else if(records.length == 0){
-            return promise.reject(new LogicError(ServiceCode.USER_NOT_EXIST));
+            return promise.reject(new LogicError(ModelCode.USER_NOT_EXIST));
         }
     }
 

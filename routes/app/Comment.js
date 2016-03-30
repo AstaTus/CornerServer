@@ -11,6 +11,10 @@ var CommentAddMsg = require("../../message/CommentAddMsg");
 var CommentBlock = require("../../message/CommentBlock");
 var MessagePacket = require("../../message/MessagePacket");
 var moment = require('moment')
+var ModelCode = require("../../config/ModelCode");
+var LogicError = require("../../util/LogicError");
+var log = require("../../util/Log");
+
 router.get('/Obtain', function(req, res, next) {
     var params = req.query;
     var session = req.session;
@@ -49,7 +53,14 @@ router.get('/Obtain', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("Comment/Obtain:" + packet.resultCode);
+
         res.json(packet);
     }
 });
@@ -94,7 +105,14 @@ router.post('/Add', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("Comment/Add:" + packet.resultCode);
+
         res.json(packet);
     }
 });
@@ -114,7 +132,6 @@ router.post('/Delete', function(req, res, next) {
         var msg = new CommentRemoveMsg();
         packet.msg = msg;
         packet.result = true;
-        packet.msg.mResult = true;
 
         res.json(packet);
     }
@@ -122,7 +139,13 @@ router.post('/Delete', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("Comment/Delete:" + packet.resultCode);
         res.json(packet);
     }
 });

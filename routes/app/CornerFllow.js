@@ -7,6 +7,10 @@ var cornerFllowService = require('../../service/cornerFllowService');
 var MessagePacket = require("../../message/MessagePacket");
 var CornerFllowStateMsg = require('../../message/CornerFllowStateMsg');
 var CornerFllowUnFllowMsg = require('../../message/CornerFllowUnFllowMsg');
+var ModelCode = require("../../config/ModelCode");
+var LogicError = require("../../util/LogicError");
+var log = require("../../util/Log");
+
 router.post('/BeenTo', function(req, res, next) {
     var params = req.body;
     var session = req.session;
@@ -28,7 +32,15 @@ router.post('/BeenTo', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("CornerFllow/BeenTo:" + packet.resultCode);
+
         res.json(packet);
     }
 });
@@ -55,7 +67,15 @@ router.post('/WantTo', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("CornerFllow/WantTo:" + packet.resultCode);
+
         res.json(packet);
     }
 });
@@ -73,7 +93,6 @@ router.post('/UnFllow', function(req, res, next) {
         packet.msg = new CornerFllowUnFllowMsg();
         packet.result = true;
         packet.msg.mCornerGuid = params.cornerGuid;
-        packet.msg.mResult = true;
 
         res.json(packet);
     }
@@ -81,7 +100,13 @@ router.post('/UnFllow', function(req, res, next) {
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("CornerFllow/UnFllow:" + packet.resultCode);
         res.json(packet);
     }
 });
