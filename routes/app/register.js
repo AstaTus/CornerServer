@@ -7,7 +7,8 @@ var router = express.Router();
 var RegisterMsg = require("../../message/RegisterMsg");
 var MessagePacket = require("../../message/MessagePacket");
 var userService = require("../../service/UserService")
-var Log = require('../../util/Log')
+var LogicError = require("../../util/LogicError");
+var log = require("../../util/Log");
 
 router.post('/', function(req, res, next) {
     var params = req.body;
@@ -30,20 +31,15 @@ router.post('/', function(req, res, next) {
         var packet = new MessagePacket();
         packet.msg = new RegisterMsg();
         packet.result = false;
-        /*if(e.message == CodeConfig.REGISTER_EMAIL_REPEAT){
-            msg.code = RegisterMsg.CODE_EMAIL_REAPT;
-        }
-        else if(e.message == CodeConfig.REGISTER_NICKNAME_REPEAT){
-            msg.code = RegisterMsg.CODE_NICKNAME_REPEAT;
-        }
-        else if(e.message == CodeConfig.REGISTER_PASSWORD_ERROR){
-            msg.code = RegisterMsg.PASSWORD_FORMAT_ERROR;
-        }
-        else{
-            packet.result = false;
+
+
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
             packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
-            //log error
-        }*/
+        }
+
+        log.getCurrent().error("Register:" + packet.resultCode);
 
         res.json(packet);
     }

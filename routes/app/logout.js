@@ -6,6 +6,9 @@ var router = express.Router();
 var userService = require("../../service/UserService")
 var LogoutMsg = require("../../message/LogoutMsg");
 var MessagePacket = require("../../message/MessagePacket");
+var ModelCode = require("../../config/ModelCode");
+var LogicError = require("../../util/LogicError");
+var log = require("../../util/Log");
 
 router.post('/', function(req, res, next) {
     var session = req.session;
@@ -15,14 +18,20 @@ router.post('/', function(req, res, next) {
         var packet = new MessagePacket();
         packet.msg = new LogoutMsg();
         packet.result = true;
-        packet.msg.mResult = true;
         res.json(packet);
     }
 
     function checkErr(e){
         var packet = new MessagePacket();
         packet.result = false;
-        packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        if (e instanceof LogicError){
+            packet.resultCode = e.code;
+        }else{
+            packet.resultCode = MessagePacket.RESULT_CODE_SERVER_INTER_ERROR;
+        }
+
+        log.getCurrent().error("Logout:" + packet.resultCode);
+
         res.json(packet);
     }
 });
