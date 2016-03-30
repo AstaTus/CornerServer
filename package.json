@@ -6,6 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+
+    "request":"~2.69.0",
     "util":"~0.10.3",
     "co":"~4.6.0",
     "node-uuid":"~1.4.7",
