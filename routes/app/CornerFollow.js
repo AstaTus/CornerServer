@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var cornerFllowService = require('../../service/cornerFllowService');
+var cornerFllowService = require('../../service/CornerFollowService');
 var MessagePacket = require("../../message/MessagePacket");
 var CornerFllowStateMsg = require('../../message/CornerFllowStateMsg');
 var CornerFllowUnFllowMsg = require('../../message/CornerFllowUnFllowMsg');

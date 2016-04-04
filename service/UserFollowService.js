@@ -2,39 +2,39 @@
  * Created by AstaTus on 2016/3/24.
  */
 
-var userFllowModel = require('../model/UserFllowModel')
+var userFollowModel = require('../model/UserFollowModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
 var ModelCode = require("../config/ModelCode")
 var ServiceCode = require("../config/ServiceCode")
 var LogicError = require("../util/LogicError");
 
-UserFllowService = function(){
+UserFollowService = function(){
 }
 
-UserFllowService.changeFllowState = function(userGuid, fllowGuid){
+UserFollowService.changeFollowState = function(userGuid, followedGuid){
 
     //检测cornerGuid 是否存在
-    return getUserFllowRecord()
-        .then(processChangeFllowState);
+    return getUserFollowRecord()
+        .then(processChangeFollowState);
 
-    function getUserFllowRecord(){
-        return userFllowModel.queryFllow(userGuid, fllowGuid);
+    function getUserFollowRecord(){
+        return userFollowModel.queryFollow(userGuid, followedGuid);
     }
 
-    function processChangeFllowState(record){
+    function processChangeFollowState(record){
         if (record.length == 0) {
-            return userFllowModel.insertFllow(userGuid, fllowGuid).then(checkMakeFllowState);
+            return userFollowModel.insertFollow(userGuid, followedGuid).then(checkMakeFllowState);
         }
         else if(record.length == 1){
-            return userFllowModel.deleteFllow(userGuid, fllowGuid).then(checkCancelFllowState);
+            return userFollowModel.deleteFollow(userGuid, followedGuid).then(checkCancelFllowState);
         }else{
             //log.getCurrent().fatal("UserFllowService.processChangeFllowState: record is not single");
             return promise.reject(new LogicError(ModelCode.USER_FLLOW_RECORD_REPEAT));
         }
     }
 
-    function checkCancelFllowState(code){
+    function checkCancelFollowState(code){
         if (code == ModelCode.USER_FLLOW_DELETE_SUCCESS){
             return ;
         }else{
@@ -43,7 +43,7 @@ UserFllowService.changeFllowState = function(userGuid, fllowGuid){
         }
     }
 
-    function checkMakeFllowState(result){
+    function checkMakeFollowState(result){
         if (code == ModelCode.USER_FLLOW_INSERT_SUCCESS){
             return ;
         }else{
@@ -51,6 +51,14 @@ UserFllowService.changeFllowState = function(userGuid, fllowGuid){
             return promise.reject(new LogicError(code));
         }
     }
+}
+
+UserFollowService.obtainFollowedUsers = function(userGuid){
+    return userFollowModel.queryFollowedUsers(userGuid);
+}
+
+UserFollowService.obtainUserFollowers = function(userGuid){
+    return userFollowModel.queryUserFollowers(userGuid);
 }
 
 module.exports = UserFllowService;

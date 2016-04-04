@@ -70,7 +70,7 @@ UserService.login = function(email, password){
 
     function checkUser(users){
         if(users.length == 0)
-            return promise.reject(new LogicError(ModelCode.USER_NOT_EXIST));
+            return promise.reject(new LogicError(ModelCode.USER_NOT_EXIST, ""));
         else if (users.length == 1 && users[0].password == password)
             return users[0].guid;
         else

@@ -29,7 +29,7 @@ CommentService.obtainCommentFromArticle = function(articleGuid, commentGuid, dir
     }
 
     return commentModel
-        .queryCommentsByArticle(articleGuid, maxCount, conditon, commentGuid)
+        .queryCommentsByArticle(articleGuid, commentGuid, conditon, maxCount)
         .then(resolve);
 
     function resolve(comments){

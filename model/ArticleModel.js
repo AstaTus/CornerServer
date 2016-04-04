@@ -25,6 +25,7 @@ ArticleModel.insertArticle = function(userGuid, cornerGuid, imageUrl, text){
 ArticleModel.NEW_CONDITION = 1;
 ArticleModel.OLD_CONDITION = 2;
 
+
 ArticleModel.queryArticleByUser = function(guid, articleGuid, condition, maxCount){
     var sql;
     var options;
@@ -97,6 +98,62 @@ ArticleModel.deleteArticle = function(articleGuid){
         else
             return ModelCode.DATABASE_KEY_REPEAT;
     }
+}
+
+ArticleModel.queryArticleByUserAndCorner = function(userGuids, cornerGuids, articleGuid, conditon, maxCount){
+
+    var sql;
+    var options;
+
+    //拉取最新
+    if(articleGuid == 0){
+
+        sql = 'SELECT ' +
+                '* ' +
+            'FROM ' +
+                'article ' +
+            'WHERE ' +
+                'user_guid in ?? OR corner_guid in ?? ' +
+            'ORDER BY ' +
+                'article.guid DESC ' +
+            'LIMIT ' +
+                '?;';
+
+        options = [userGuids, cornerGuids, maxCount];
+
+    }//上拉
+    else if (condition == ArticleModel.NEW_CONDITION){
+        sql = 'SELECT ' +
+            '* ' +
+            'FROM ' +
+            'article ' +
+            'WHERE ' +
+            '(user_guid in ?? OR corner_guid in ??) AND article.guid > ?' +
+            'ORDER BY ' +
+            'article.guid DESC ' +
+            'LIMIT ' +
+            '?;';
+
+        options = [userGuids, cornerGuids, articleGuid, maxCount];
+    }//下拉
+    else{
+        sql = 'SELECT ' +
+            '* ' +
+            'FROM ' +
+            'article ' +
+            'WHERE ' +
+            '(user_guid in ?? OR corner_guid in ??) AND article.guid < ? ' +
+            'ORDER BY ' +
+            'article.guid DESC ' +
+            'LIMIT ' +
+            '?;';
+
+        options = [userGuids, cornerGuids, articleGuid, maxCount];
+    }
+
+    return sqlManager.excuteSqlAsync(sql, options);
+
+
 }
 
 module.exports = ArticleModel;

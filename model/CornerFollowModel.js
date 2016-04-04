@@ -9,13 +9,14 @@ var sqlManager = require('../database/SqlManager')
 var log = require('../util/Log')
 var promise = require('bluebird')
 var ModelCode = require('../config/ModelCode')
+var ModelDef = require('./ModelDef');
 
-var CornerFllowModel = function(){}
+var CornerFollowModel = function(){}
 
-CornerFllowModel.FLLOW_STATE_WANT = 1;
-CornerFllowModel.FLLOW_STATE_BEEN = 2;
+CornerFollowModel.FLLOW_STATE_WANT = 1;
+CornerFollowModel.FLLOW_STATE_BEEN = 2;
 
-CornerFllowModel.insertFllow = function(cornerGuid, fllowGuid, state){
+CornerFollowModel.insertFollow = function(cornerGuid, fllowGuid, state){
     var sql = 'INSERT INTO corner_fllow (corner_guid, fllow_guid, state) VALUES (?, ?, ?);';
     var options = [cornerGuid, fllowGuid, state];
 
@@ -27,7 +28,7 @@ CornerFllowModel.insertFllow = function(cornerGuid, fllowGuid, state){
 }
 
 
-CornerFllowModel.queryFllow = function(cornerGuid, fllowGuid){
+CornerFollowModel.queryFollow = function(cornerGuid, fllowGuid){
     var sql = 'SELECT * FROM corner_fllow WHERE corner_guid = ? AND fllow_guid = ?';
     var options = [cornerGuid, fllowGuid];
 
@@ -46,7 +47,7 @@ CornerFllowModel.queryFllow = function(cornerGuid, fllowGuid){
     }*/
 }
 
-CornerFllowModel.deleteFllow = function(cornerGuid, fllowGuid){
+CornerFollowModel.deleteFollow = function(cornerGuid, fllowGuid){
     var sql = 'DELETE * FROM corner_fllow WHERE corner_guid = ? AND fllow_guid = ?';
     var options = [cornerGuid, fllowGuid];
 
@@ -62,7 +63,7 @@ CornerFllowModel.deleteFllow = function(cornerGuid, fllowGuid){
     }
 }
 
-CornerFllowModel.updateFllowState = function(cornerGuid, fllowGuid, state){
+CornerFollowModel.updateFollowState = function(cornerGuid, fllowGuid, state){
     var sql = 'UPDATE corner_fllow SET state = ? WHERE corner_guid = ? AND fllow_guid = ?';
     var options = [state, cornerGuid, fllowGuid];
 
@@ -79,14 +80,56 @@ CornerFllowModel.updateFllowState = function(cornerGuid, fllowGuid, state){
     }
 }
 
-CornerFllowModel.queryCornerFllows = function(cornerGuid){
-    var sql = 'SELECT * FROM corner_fllow WHERE corner_guid = ?';
+CornerFollowModel.queryCornerFollowers = function(cornerGuid, id, condition, maxCount){
+    var sql;
+    var options;
+    if (condition == ModelDef.NO_CONDITON){
+        sql = 'SELECT ' +
+                '* ' +
+            'FROM ' +
+             'corner_follow ' +
+            'WHERE ' +
+                'corner_guid = ? ' +
+            'ORDER BY ' +
+                'id DESC ' +
+            'LIMIT ' +
+            '?;';
+
+        options = [cornerGuid, maxCount];
+    }else if(condition == ModelDef.NEW_CONDITION){
+        sql = 'SELECT ' +
+                '* ' +
+            'FROM ' +
+                'corner_follow ' +
+            'WHERE ' +
+                'corner_guid = ? AND id > ?' +
+            'ORDER BY ' +
+                'id DESC ' +
+            'LIMIT ' +
+                '?;';
+
+        options = [cornerGuid, id, maxCount];
+    }else{
+        sql = 'SELECT ' +
+                '* ' +
+            'FROM ' +
+                'corner_follow ' +
+            'WHERE ' +
+                'corner_guid = ? AND id < ?' +
+            'ORDER BY ' +
+                'id DESC ' +
+            'LIMIT ' +
+                '?;';
+
+        options = [cornerGuid, id, maxCount];
+    }
+
     var options = [cornerGuid];
 
     return sqlManager.excuteSqlAsync(sql, options);
 }
 
-CornerFllowModel.queryUserFllowed = function(floowGuid){
+CornerFollowModel.queryFollowedCorners = function(followedGuid){
     var sql = 'SELECT * FROM corner_fllow WHERE fllow_guid = ?';
     var options = [floowGuid];
 

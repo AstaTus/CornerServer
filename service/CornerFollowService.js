@@ -2,7 +2,7 @@
  * Created by AstaTus on 2016/3/24.
  */
 
-var cornerFllowModel = require('../model/CornerFllowModel')
+var cornerFllowModel = require('../model/CornerFollowModel')
 var promise = require('bluebird')
 var log = require('../util/Log')
 

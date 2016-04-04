@@ -77,7 +77,7 @@ ArticleService.obtainAriticleFromUser = function(userGuid, articleUserGuid, arti
         return promise.all(promise.map(articles, function(article) {
              return promise.join(article,
                 cornerModel.queryCornerByGuid(article.corner_guid),
-                 commentModel.queryCommentsByArticle(article.guid, 3, commentModel.NO_CONDITION, 0),
+                 commentModel.queryCommentsByArticle(article.guid, 0, commentModel.NO_CONDITION, 3),
                 upModel.queryUserGuidsByArticle(article.guid),
                 handleRelativeData);
         }));

@@ -14,7 +14,7 @@ var log = require("../../util/Log");
 router.post('/', function(req, res, next) {
     var params = req.body;
     var session = req.session;
-    userService.login(params.email, params.password).spread(checkResult).error(checkErr);
+    userService.login(params.email, params.password).spread(checkResult).error(checkErr).catch(checkErr);
 
     function checkResult(userGuid){
         var packet = new MessagePacket();
